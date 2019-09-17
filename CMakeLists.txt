@@ -3,4 +3,4 @@ project(spisok_2)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(spisok_2 main.cpp)
+add_executable(spisok_2 main.cpp myqueue.h newqueue.h myqueue.cpp newqueue.cpp)
