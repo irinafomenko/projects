@@ -9,6 +9,7 @@ void Print();
 void push(int n);
 void push_front(int n);
 void pop();
+void pop_back();
 int head_element();
 int end_element();
 int print_size();
