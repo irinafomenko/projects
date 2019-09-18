@@ -24,9 +24,10 @@ struct List
 
 struct Queue_v1
 {
-    Queue_v1() : begin(NULL), end(NULL){}
+    Queue_v1() : begin(NULL), end(NULL), prev(NULL){}
     List* begin;
     List* end;
+    List* prev;
     int size = 0;
 };
 Queue_v1 queue_v1;
@@ -57,6 +58,7 @@ void push(int n)
     if(queue_v1.end!=NULL)
     {
         queue_v1.end->next = new List(n);
+        queue_v1.prev = queue_v1.end;
         queue_v1.end = queue_v1.end->next;
     }
     else
@@ -72,8 +74,17 @@ void push_front(int n)
     if(queue_v1.begin != NULL)
     {
         List* tmp = new List(n);
-        tmp->next = queue_v1.begin;
-        queue_v1.begin = tmp;
+        if(queue_v1.size == 1)
+        {
+            tmp->next = queue_v1.begin;
+            queue_v1.begin = tmp;
+            queue_v1.prev = queue_v1.begin;
+        }
+        else
+        {
+            tmp->next = queue_v1.begin;
+            queue_v1.begin = tmp;
+        }
     }
     else
     {
@@ -91,6 +102,41 @@ void pop()
         List* el = queue_v1.begin;
         queue_v1.begin = queue_v1.begin->next;
         delete el;
+        queue_v1.size--;
+    }
+    else
+    {
+        cout << "List have not elements!" << endl;
+    }
+}
+
+void pop_back() //---???
+{
+    if (queue_v1.end!=NULL)
+    {
+        if (queue_v1.begin == queue_v1.end) queue_v1.begin = NULL;
+        List* el = queue_v1.end;
+        queue_v1.end = queue_v1.prev;
+        delete el;
+        List* tmp = queue_v1.begin;
+        while((tmp != NULL) && (tmp != queue_v1.end))
+        {
+            tmp = tmp->next;
+        }
+        tmp->next = NULL;
+        /*
+        List* el;
+        List* prev = NULL;
+        List* tmp = queue_v1.begin;
+        while((tmp != NULL) && (tmp != queue_v1.end))
+        {
+            prev = tmp;
+            tmp = tmp->next;
+        }
+        queue_v1.end = prev;
+        //el = tmp->next;
+        free(tmp->next);
+         */
         queue_v1.size--;
     }
     else
