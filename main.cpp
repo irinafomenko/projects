@@ -46,12 +46,13 @@ int main()
                 cout << "1 - Add element to back" << endl;
                 cout << "2 - Add element to front" << endl;
                 cout << "3 - Delete first element" << endl;
-                cout << "4 - Print first element" << endl;
-                cout << "5 - Print last element" << endl;
-                cout << "6 - Print size" << endl;
-                cout << "7 - Print list" << endl;
-                cout << "8 - Speed_test" << endl;
-                cout << "9 - Quit" << endl;
+                cout << "4 - Delete last element" << endl;
+                cout << "5 - Print first element" << endl;
+                cout << "6 - Print last element" << endl;
+                cout << "7 - Print size" << endl;
+                cout << "8 - Print list" << endl;
+                cout << "9 - Speed_test" << endl;
+                cout << "10 - Quit" << endl;
                 cin >> change;
 
                 switch (change) {
@@ -69,22 +70,25 @@ int main()
                         pop();
                         break;
                     case 4:
-                        cout << head_element() << endl;
+                        pop_back();
                         break;
                     case 5:
-                        cout << end_element() << endl;
+                        cout << head_element() << endl;
                         break;
                     case 6:
-                        cout << "Size: " << print_size() << endl;
+                        cout << end_element() << endl;
                         break;
                     case 7:
-                        Print();
+                        cout << "Size: " << print_size() << endl;
                         break;
                     case 8:
+                        Print();
+                        break;
+                    case 9:
                         s_time = speed_test_mylist();
                         cout << "Time: " << s_time << endl;
                         break;
-                    case 9:
+                    case 10:
                         break;
                     default:
                         break;
