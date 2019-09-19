@@ -13,21 +13,21 @@ struct Data
 struct List
 {
 
-    List() : next(NULL){}
-    List(int n) : next(NULL)
+    List() : next(NULL), prev(NULL){}
+    List(int n) : next(NULL), prev(NULL)
     {
         num.data = n;
     }
     Data num;
     List* next;
+    List* prev;
 };
 
 struct Queue_v1
 {
-    Queue_v1() : begin(NULL), end(NULL), prev(NULL){}
+    Queue_v1() : begin(NULL), end(NULL){}
     List* begin;
     List* end;
-    List* prev;
     int size = 0;
 };
 Queue_v1 queue_v1;
@@ -57,8 +57,10 @@ void push(int n)
 {
     if(queue_v1.end!=NULL)
     {
-        queue_v1.end->next = new List(n);
-        queue_v1.prev = queue_v1.end;
+        List* temp = new List(n);
+        temp->next = 0;
+        temp->prev = queue_v1.end;
+        queue_v1.end->next = temp;
         queue_v1.end = queue_v1.end->next;
     }
     else
@@ -74,17 +76,10 @@ void push_front(int n)
     if(queue_v1.begin != NULL)
     {
         List* tmp = new List(n);
-        if(queue_v1.size == 1)
-        {
-            tmp->next = queue_v1.begin;
-            queue_v1.begin = tmp;
-            queue_v1.prev = queue_v1.begin;
-        }
-        else
-        {
-            tmp->next = queue_v1.begin;
-            queue_v1.begin = tmp;
-        }
+        tmp->prev = 0;
+        tmp->next = queue_v1.begin;
+        queue_v1.begin->prev = tmp;
+        queue_v1.begin = tmp;
     }
     else
     {
@@ -110,33 +105,21 @@ void pop()
     }
 }
 
-void pop_back() //---???
+void pop_back()
 {
     if (queue_v1.end!=NULL)
     {
         if (queue_v1.begin == queue_v1.end) queue_v1.begin = NULL;
         List* el = queue_v1.end;
-        queue_v1.end = queue_v1.prev;
+        queue_v1.end = queue_v1.end->prev;
         delete el;
+
         List* tmp = queue_v1.begin;
         while((tmp != NULL) && (tmp != queue_v1.end))
         {
             tmp = tmp->next;
         }
         tmp->next = NULL;
-        /*
-        List* el;
-        List* prev = NULL;
-        List* tmp = queue_v1.begin;
-        while((tmp != NULL) && (tmp != queue_v1.end))
-        {
-            prev = tmp;
-            tmp = tmp->next;
-        }
-        queue_v1.end = prev;
-        //el = tmp->next;
-        free(tmp->next);
-         */
         queue_v1.size--;
     }
     else
@@ -150,12 +133,11 @@ int head_element()
     if(queue_v1.begin!=NULL)
     {
         int el = queue_v1.begin->num.data;
-        //cout << el << endl;
         return el;
     }
     else
     {
-        cout << "List have not elements!" << endl;
+        //cout << "List have not elements!" << endl;
         return 0;
     }
 }
@@ -169,7 +151,7 @@ int end_element()
     }
     else
     {
-        cout << "List have not elements!" << endl;
+        //cout << "List have not elements!" << endl;
         return 0;
     }
 }
@@ -205,8 +187,6 @@ unsigned int speed_test_mylist()
     {
         if(head_element() == array[indx])
         {
-            //int el = head_element();
-            //cout << "TRU: " << el << " - " << array[indx] << endl;
             pop();
             indx++;
         }
