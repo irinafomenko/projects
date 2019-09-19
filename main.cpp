@@ -73,10 +73,12 @@ int main()
                         pop_back();
                         break;
                     case 5:
-                        cout << head_element() << endl;
+                        if(head_element() != 0) cout << head_element() << endl;
+                        else cout << "List have not elements!" << endl;
                         break;
                     case 6:
-                        cout << end_element() << endl;
+                        if(end_element() != 0) cout << end_element() << endl;
+                        else cout << "List have not elements!" << endl;
                         break;
                     case 7:
                         cout << "Size: " << print_size() << endl;
