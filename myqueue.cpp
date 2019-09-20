@@ -58,7 +58,7 @@ void push(int n)
     if(queue_v1.end!=NULL)
     {
         List* temp = new List(n);
-        temp->next = 0;
+        temp->next = NULL;
         temp->prev = queue_v1.end;
         queue_v1.end->next = temp;
         queue_v1.end = queue_v1.end->next;
@@ -66,6 +66,8 @@ void push(int n)
     else
     {
         queue_v1.end = new List(n);
+        queue_v1.end->prev = NULL;
+        queue_v1.end->next = NULL;
         queue_v1.begin = queue_v1.end;
     }
     queue_v1.size++;
@@ -76,14 +78,21 @@ void push_front(int n)
     if(queue_v1.begin != NULL)
     {
         List* tmp = new List(n);
-        tmp->prev = 0;
+        tmp->prev = NULL;
         tmp->next = queue_v1.begin;
         queue_v1.begin->prev = tmp;
         queue_v1.begin = tmp;
+        /*
+        if(queue_v1.size == 1)
+        {
+            queue_v1.end->prev = tmp;
+        }*/
     }
     else
     {
         queue_v1.begin = new List(n);
+        queue_v1.begin->prev = NULL;
+        queue_v1.begin->next = NULL;
         queue_v1.end = queue_v1.begin;
     }
     queue_v1.size++;
@@ -113,13 +122,10 @@ void pop_back()
         List* el = queue_v1.end;
         queue_v1.end = queue_v1.end->prev;
         delete el;
-
-        List* tmp = queue_v1.begin;
-        while((tmp != NULL) && (tmp != queue_v1.end))
+        if(queue_v1.size != 1)
         {
-            tmp = tmp->next;
+            queue_v1.end->next = NULL;
         }
-        tmp->next = NULL;
         queue_v1.size--;
     }
     else
