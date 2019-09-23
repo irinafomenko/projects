@@ -170,6 +170,13 @@ int print_size()
 
 unsigned int speed_test_mylist()
 {
+    if(queue_v1.size != 0)
+    {
+        while (queue_v1.begin != NULL)
+        {
+            pop();
+        }
+    }
     int number;
     int size;
     int indx = 0;
