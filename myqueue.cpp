@@ -3,8 +3,19 @@
 //
 #include <iostream>
 #include <ctime>
+#include <exception>
 
 using namespace std;
+
+/*----------exception---------------*/
+class myexception: public exception
+{
+    virtual const char* what() const throw()
+    {
+        return "List have not elements!";
+    }
+} myex;
+/*----------------------------------*/
 
 struct Data
 {
@@ -45,7 +56,7 @@ void Print()
         List* tmp = queue_v1.begin;
         if(tmp == NULL)
         {
-            throw tmp;
+            throw myex;
         }
         while (tmp!=NULL)
         {
@@ -55,8 +66,8 @@ void Print()
         }
         cout << endl;
     }
-    catch (List* x){
-        cout << "Is empty!" << endl;
+    catch (exception& e){
+        cout << e.what() << endl;
     }
     //}
 }
@@ -110,15 +121,15 @@ void push_front(int n)
 void pop()
 {
     try{
-        if(queue_v1.begin == NULL) {throw queue_v1.begin;}
+        if(queue_v1.begin == NULL) {throw myex;}
         if (queue_v1.begin == queue_v1.end) queue_v1.end = NULL;
         List* el = queue_v1.begin;
         queue_v1.begin = queue_v1.begin->next;
         delete el;
         queue_v1.size--;
     }
-    catch(List* x){
-        cout << "List have not elements!" << endl;
+    catch(exception& e){
+        cout << e.what() << endl;
     }/*
     if (queue_v1.begin!=NULL)
     {
@@ -137,7 +148,7 @@ void pop()
 void pop_back()
 {
     try{
-        if(queue_v1.end == NULL) {throw queue_v1.begin;}
+        if(queue_v1.end == NULL) {throw myex;}
         if (queue_v1.begin == queue_v1.end) queue_v1.begin = NULL;
         List* el = queue_v1.end;
         queue_v1.end = queue_v1.end->prev;
@@ -148,8 +159,8 @@ void pop_back()
         }
         queue_v1.size--;
     }
-    catch(List* x){
-        cout << "List have not elements!" << endl;
+    catch(exception& e){
+        cout << e.what() << endl;
     }
     /*if (queue_v1.end!=NULL)
     {
@@ -206,7 +217,7 @@ int print_size()
 unsigned int speed_test_mylist()
 {
     try{
-        if(queue_v1.size != 0) {throw queue_v1.size;}
+        if(queue_v1.size != 0) {throw myex;}
         int number;
         int size;
         int indx = 0;
@@ -245,7 +256,7 @@ unsigned int speed_test_mylist()
         cout << "Time: " << search_time << endl;
         return search_time;
     }
-    catch(int x){
+    catch(exception& e){
         cout << "Queue is not empty!" << endl;
         return 0;
     }
