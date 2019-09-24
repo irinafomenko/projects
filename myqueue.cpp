@@ -3,6 +3,7 @@
 //
 #include <iostream>
 #include <ctime>
+
 using namespace std;
 
 struct Data
@@ -34,13 +35,18 @@ Queue_v1 queue_v1;
 
 void Print()
 {
-    if(queue_v1.begin==NULL)
+    /*if(queue_v1.begin==NULL)
     {
         cout << "Is empty!" << endl;
     }
     else
-    {
+    {*/
+    try{
         List* tmp = queue_v1.begin;
+        if(tmp == NULL)
+        {
+            throw tmp;
+        }
         while (tmp!=NULL)
         {
             int el = tmp->num.data;
@@ -49,7 +55,10 @@ void Print()
         }
         cout << endl;
     }
-
+    catch (List* x){
+        cout << "Is empty!" << endl;
+    }
+    //}
 }
 
 
@@ -100,6 +109,17 @@ void push_front(int n)
 
 void pop()
 {
+    try{
+        if(queue_v1.begin == NULL) {throw queue_v1.begin;}
+        if (queue_v1.begin == queue_v1.end) queue_v1.end = NULL;
+        List* el = queue_v1.begin;
+        queue_v1.begin = queue_v1.begin->next;
+        delete el;
+        queue_v1.size--;
+    }
+    catch(List* x){
+        cout << "List have not elements!" << endl;
+    }/*
     if (queue_v1.begin!=NULL)
     {
         if (queue_v1.begin == queue_v1.end) queue_v1.end = NULL;
@@ -111,12 +131,27 @@ void pop()
     else
     {
         cout << "List have not elements!" << endl;
-    }
+    }*/
 }
 
 void pop_back()
 {
-    if (queue_v1.end!=NULL)
+    try{
+        if(queue_v1.end == NULL) {throw queue_v1.begin;}
+        if (queue_v1.begin == queue_v1.end) queue_v1.begin = NULL;
+        List* el = queue_v1.end;
+        queue_v1.end = queue_v1.end->prev;
+        delete el;
+        if(queue_v1.size != 1)
+        {
+            queue_v1.end->next = NULL;
+        }
+        queue_v1.size--;
+    }
+    catch(List* x){
+        cout << "List have not elements!" << endl;
+    }
+    /*if (queue_v1.end!=NULL)
     {
         if (queue_v1.begin == queue_v1.end) queue_v1.begin = NULL;
         List* el = queue_v1.end;
@@ -131,7 +166,7 @@ void pop_back()
     else
     {
         cout << "List have not elements!" << endl;
-    }
+    }*/
 }
 
 int head_element()
@@ -170,48 +205,48 @@ int print_size()
 
 unsigned int speed_test_mylist()
 {
-    if(queue_v1.size != 0)
-    {
-        while (queue_v1.begin != NULL)
+    try{
+        if(queue_v1.size != 0) {throw queue_v1.size;}
+        int number;
+        int size;
+        int indx = 0;
+        cout << "Enter the numbers of items: " << endl;
+        cin >> number;
+        int *array = new int[number];
+        //--1--
+        for (int i = 0; i < number; i++)
         {
-            pop();
+            array[i] = 1 + rand() % 10;
         }
-    }
-    int number;
-    int size;
-    int indx = 0;
-    cout << "Enter the numbers of items: " << endl;
-    cin >> number;
-    int *array = new int[number];
-    //--1--
-    for (int i = 0; i < number; i++)
-    {
-        array[i] = 1 + rand() % 10;
-    }
-    unsigned int start_time =  clock(); // начальное время
-    //--2--
-    for(int i=0; i<number; i++)
-    {
-        push(array[i]);
-    }
-    //--3--
-    size = queue_v1.size;
-    while(size!=0 && indx<number)
-    {
-        if(head_element() == array[indx])
+        unsigned int start_time =  clock(); // начальное время
+        //--2--
+        for(int i=0; i<number; i++)
         {
-            pop();
-            indx++;
+            push(array[i]);
         }
-        else
+        //--3--
+        size = queue_v1.size;
+        while(size!=0 && indx<number)
         {
-            int el = head_element();
-            cout << "False!" << el << " - " << array[indx] << endl;
-            break;
+            if(head_element() == array[indx])
+            {
+                pop();
+                indx++;
+            }
+            else
+            {
+                int el = head_element();
+                cout << "False!" << el << " - " << array[indx] << endl;
+                break;
+            }
         }
+        unsigned int end_time = clock(); // конечное время
+        unsigned int search_time = end_time - start_time; // искомое время
+        cout << "Time: " << search_time << endl;
+        return search_time;
     }
-    unsigned int end_time = clock(); // конечное время
-    unsigned int search_time = end_time - start_time; // искомое время
-
-    return search_time;
+    catch(int x){
+        cout << "Queue is not empty!" << endl;
+        return 0;
+    }
 }
