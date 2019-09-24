@@ -12,7 +12,12 @@ class myexception: public exception
 {
     virtual const char* what() const throw()
     {
-        return "List have not elements!";
+        return "Queue have not elements!";
+    }
+public:
+    const char* not_empty()
+    {
+        return "Queue is not empty!";
     }
 } myex;
 /*----------------------------------*/
@@ -256,8 +261,8 @@ unsigned int speed_test_mylist()
         cout << "Time: " << search_time << endl;
         return search_time;
     }
-    catch(exception& e){
-        cout << "Queue is not empty!" << endl;
+    catch(myexception e){
+        cout << e.not_empty() << endl;
         return 0;
     }
 }
