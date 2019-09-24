@@ -4,8 +4,16 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char *argv[])
 {
+    if(argc>1)
+    {
+        for(int i = 1; i < argc; i++)
+        {
+            int el = atoi(argv[i]);
+            push(el);
+        }
+    }
     //queue.begin = new List;//List(0);
     int el;
     int change_list = 1; //выбор списка
