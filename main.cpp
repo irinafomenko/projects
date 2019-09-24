@@ -87,8 +87,9 @@ int main()
                         Print();
                         break;
                     case 9:
-                        s_time = speed_test_mylist();
-                        cout << "Time: " << s_time << endl;
+                        //s_time = speed_test_mylist();
+                        //cout << "Time: " << s_time << endl;
+                        speed_test_mylist();
                         break;
                     case 10:
                         break;
