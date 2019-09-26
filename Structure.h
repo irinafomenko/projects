@@ -21,7 +21,7 @@ protected:
     }*begin, *end;
     int size = 0;
 public:
-    Structure(){};     //constructor
+    Structure(): begin(NULL), end(NULL){};     //constructor
     ~Structure(){};   //destructor
     virtual void push(int n) {};       //base methods
     virtual void push_front(int n) {};
@@ -34,7 +34,7 @@ public:
 
 class myQueue: public Structure{
 public:
-    myQueue(){};
+    myQueue() {};
     ~myQueue()
     {
         while(begin)
