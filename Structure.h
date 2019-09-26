@@ -6,6 +6,9 @@
 #define SPISOK_2_STRUCTURE_H
 
 #include <iostream>
+#include "my_exceptions.h"
+
+myexception ex2;
 
 class Structure {
 protected:
@@ -32,12 +35,6 @@ public:
 class myQueue: public Structure{
 public:
     myQueue(){};
-    /*myQueue(int n)
-    {
-        begin->num = n;
-        begin->next = NULL;
-        end = NULL;
-    }*/
     ~myQueue()
     {
         while(begin)
@@ -70,17 +67,16 @@ public:
 
     void pop()
     {
-        if(begin == NULL)
-        {
-            std::cout << "Queue have not elements!" << std:: endl;
-        }
-        else
-        {
+        try{
+            if(begin == NULL) {throw ex2;}
             if (begin == end) end = NULL;
             List* el = begin;
             begin = begin->next;
             delete el;
             size--;
+        }
+        catch(std::exception& e){
+            std::cout << e.what() << std::endl;
         }
     }
 
@@ -104,13 +100,12 @@ public:
 
     void Print()
     {
-        if(begin == NULL)
-        {
-            std::cout << "Is empty!" << std::endl;
-        }
-        else
-        {
+        try{
             List* temp = begin;
+            if(temp == NULL)
+            {
+                throw ex2;
+            }
             while (temp != NULL)
             {
                 int el = temp->num;
@@ -119,6 +114,10 @@ public:
             }
             std::cout << std::endl;
         }
+        catch (std::exception& e){
+            std::cout << e.what() << std::endl;
+        }
+
     }
 };
 
@@ -181,19 +180,22 @@ public:
 
     void pop_back()
     {
-        if(end == NULL)
-        {
-            std::cout << "Queue have not elements!" << std:: endl;
+        try{
+            if(end == NULL) {throw ex2;}
+            if (begin == end) begin = NULL;
+            List* el = end;
+            end = end->prev;
+            delete el;
+            if(size != 1)
+            {
+                end->next = NULL;
+            }
+            size--;
         }
-        if (begin == end) begin = NULL;
-        List* el = end;
-        end = end->prev;
-        delete el;
-        if(size != 1)
-        {
-            end->next = NULL;
+        catch(std::exception& e){
+            std::cout << e.what() << std::endl;
         }
-        size--;
+
     }
 
     int end_element()

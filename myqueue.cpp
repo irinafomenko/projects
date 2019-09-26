@@ -3,24 +3,10 @@
 //
 #include <iostream>
 #include <ctime>
-#include <exception>
+#include "my_exceptions.h"
 
 using namespace std;
-
-/*----------exception---------------*/
-class myexception: public exception
-{
-    virtual const char* what() const throw()
-    {
-        return "Queue have not elements!";
-    }
-public:
-    const char* not_empty()
-    {
-        return "Queue is not empty!";
-    }
-} myex;
-/*----------------------------------*/
+myexception ex;
 
 struct Data
 {
@@ -61,7 +47,7 @@ void Print()
         List* tmp = queue_v1.begin;
         if(tmp == NULL)
         {
-            throw myex;
+            throw ex;
         }
         while (tmp!=NULL)
         {
@@ -126,7 +112,7 @@ void push_front(int n)
 void pop()
 {
     try{
-        if(queue_v1.begin == NULL) {throw myex;}
+        if(queue_v1.begin == NULL) {throw ex;}
         if (queue_v1.begin == queue_v1.end) queue_v1.end = NULL;
         List* el = queue_v1.begin;
         queue_v1.begin = queue_v1.begin->next;
@@ -153,7 +139,7 @@ void pop()
 void pop_back()
 {
     try{
-        if(queue_v1.end == NULL) {throw myex;}
+        if(queue_v1.end == NULL) {throw ex;}
         if (queue_v1.begin == queue_v1.end) queue_v1.begin = NULL;
         List* el = queue_v1.end;
         queue_v1.end = queue_v1.end->prev;
@@ -222,7 +208,7 @@ int print_size()
 unsigned int speed_test_mylist()
 {
     try{
-        if(queue_v1.size != 0) {throw myex;}
+        if(queue_v1.size != 0) {throw ex;}
         int number;
         int size;
         int indx = 0;
