@@ -1,6 +1,7 @@
 #include <iostream>
 #include "newqueue.h"
 #include "myqueue.h"
+#include "Logger.h"
 
 using namespace std;
 
@@ -14,6 +15,8 @@ int main(int argc, char *argv[])
             push(el);
         }
     }
+    Logger log("log_example.txt");
+    log.print("It's work!");
     //queue.begin = new List;//List(0);
     int el;
     int change_list = 1; //выбор списка
