@@ -20,7 +20,6 @@ int main(int argc, char *argv[])
     // Работа с классами
     myQueue* obj;
     obj = new myQueue();
-    cout << "qw" << endl;
     obj->push(5);
     obj->push(6);
     cout << "1: ";
@@ -33,6 +32,29 @@ int main(int argc, char *argv[])
     else cout << "List have not elements!" << endl;
     cout << "4: ";
     cout << "Size: " << obj->print_size() << endl;
+
+    myDequeue* obj2 = new myDequeue;
+    obj2->push(8);
+    obj2->push_front(7);
+    obj2->push_front(9);
+    obj2->push(10);
+    obj2->push(11);
+    cout << "1: ";
+    obj2->Print();
+    obj2->pop();
+    cout << "2: ";
+    obj2->Print();
+    cout << "3: ";
+    cout << "Size: " << obj2->print_size() << endl;
+    cout << "4: ";
+    if(obj->head_element() != 0) cout << obj2->head_element() << endl;
+    else cout << "Queue have not elements!" << endl;
+    cout << "5: ";
+    obj2->pop_back();
+    obj2->Print();
+    cout << "6: ";
+    if(obj2->end_element() != 0) cout << obj2->end_element() << endl;
+    else cout << "Queue have not elements!" << endl;
     /*---------------------------------------------*/
     Logger log("log_example.txt"); // класс Logger
     log.print("It's work!"); // класс Logger
@@ -105,11 +127,11 @@ int main(int argc, char *argv[])
                         break;
                     case 5:
                         if(head_element() != 0) cout << head_element() << endl;
-                        else cout << "List have not elements!" << endl;
+                        else cout << "Queue have not elements!" << endl;
                         break;
                     case 6:
                         if(end_element() != 0) cout << end_element() << endl;
-                        else cout << "List have not elements!" << endl;
+                        else cout << "Queue have not elements!" << endl;
                         break;
                     case 7:
                         cout << "Size: " << print_size() << endl;
