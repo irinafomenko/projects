@@ -8,33 +8,30 @@
 #include <iostream>
 
 class Structure {
+protected:
+    struct List
+    {
+        int num;
+        List* next;
+        List* prev;
+        List(): next(NULL), prev(NULL){};
+    }*begin, *end;
+    int size = 0;
 public:
     Structure(){};     //constructor
     ~Structure(){};   //destructor
-    /*int num;
-    Structure* next;
-    int size = 0;
-    Structure* begin;
-    Structure* end;*/
     virtual void push(int n) {};       //base methods
-    //virtual void push_front(int n);
+    virtual void push_front(int n) {};
     virtual void pop() {};
-    //virtual void pop_back();
+    virtual void pop_back() {};
     virtual int head_element() {return 0;};
-    //virtual int end_element();
+    virtual int end_element() { return 0;};
     virtual int print_size() {return 0;};
 };
 
 class myQueue: public Structure{
-    struct myQueue1
-    {
-        int num;
-        myQueue1 *next;
-        myQueue1(): next(NULL) {};
-    }*begin, *end;
-    int size = 0;
 public:
-    myQueue(): begin(NULL), end(NULL){};
+    myQueue(){};
     /*myQueue(int n)
     {
         begin->num = n;
@@ -45,7 +42,7 @@ public:
     {
         while(begin)
         {
-            myQueue1* tmp = begin;
+            List* tmp = begin;
             begin = begin->next;
             delete tmp;
         }
@@ -55,7 +52,7 @@ public:
     {
         if(end != NULL)
         {
-            myQueue1* temp = new myQueue1;
+            List* temp = new List;
             temp->num = n;
             temp->next = NULL;
             end->next = temp;
@@ -63,7 +60,7 @@ public:
         }
         else
         {
-            end = new myQueue1;
+            end = new List;
             end->num = n;
             end->next = NULL;
             begin = end;
@@ -80,7 +77,7 @@ public:
         else
         {
             if (begin == end) end = NULL;
-            myQueue1* el = begin;
+            List* el = begin;
             begin = begin->next;
             delete el;
             size--;
@@ -113,7 +110,7 @@ public:
         }
         else
         {
-            myQueue1* temp = begin;
+            List* temp = begin;
             while (temp != NULL)
             {
                 int el = temp->num;
@@ -121,6 +118,94 @@ public:
                 temp = temp->next;
             }
             std::cout << std::endl;
+        }
+    }
+};
+
+class myDequeue: public myQueue {
+public:
+    myDequeue(){};
+    ~myDequeue()
+    {
+        while(begin)
+        {
+            List* tmp = begin;
+            begin = begin->next;
+            delete tmp;
+        }
+    };
+
+    void push(int n)
+    {
+        if(end != NULL)
+        {
+            List* temp = new List;
+            temp->num = n;
+            temp->next = NULL;
+            temp->prev = end;
+            end->next = temp;
+            end = end->next;
+        }
+        else
+        {
+            end = new List;
+            end->num = n;
+            end->next = NULL;
+            end->prev = NULL;
+            begin = end;
+        }
+        size++;
+    }
+
+    void push_front(int n)
+    {
+        if(begin != NULL)
+        {
+            List* tmp = new List;
+            tmp->num = n;
+            tmp->prev = NULL;
+            tmp->next = begin;
+            begin->prev = tmp;
+            begin = tmp;
+        }
+        else
+        {
+            begin = new List;
+            begin->num = n;
+            begin->prev = NULL;
+            begin->next = NULL;
+            end = begin;
+        }
+        size++;
+    }
+
+    void pop_back()
+    {
+        if(end == NULL)
+        {
+            std::cout << "Queue have not elements!" << std:: endl;
+        }
+        if (begin == end) begin = NULL;
+        List* el = end;
+        end = end->prev;
+        delete el;
+        if(size != 1)
+        {
+            end->next = NULL;
+        }
+        size--;
+    }
+
+    int end_element()
+    {
+        if(end!=NULL)
+        {
+            int el = end->num;
+            return el;
+        }
+        else
+        {
+            return 0;
         }
     }
 };
