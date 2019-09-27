@@ -6,5 +6,4 @@
 #define SPISOK_2_NEWQUEUE_H
 
 unsigned int speed_test();
-
 #endif //SPISOK_2_NEWQUEUE_H
