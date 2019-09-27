@@ -2,7 +2,7 @@
 #include "newqueue.h"
 #include "myqueue.h"
 #include "Logger.h"
-#include "Structure.h"
+#include "class_deque.h"
 
 using namespace std;
 
@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     int change_class = 1; //выбор класса
     int change_queue =1; //выбор действя для queue (class)
     myQueue* myQu = new myQueue;
-    myDequeue* myDequ = new myDequeue;
+    myDeque* myDequ = new myDeque;
     unsigned int s_time;
     while((change_list>=1) && (change_list<=3)) {
         /*---------------------------------------------*/
