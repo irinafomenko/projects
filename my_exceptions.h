@@ -17,10 +17,6 @@ class myexception: public std::exception
 public:
     myexception(){};
     ~myexception(){};
-    const char* not_empty()
-    {
-        return "Queue is not empty!";
-    }
 };
 /*----------------------------------*/
 
