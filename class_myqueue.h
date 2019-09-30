@@ -12,7 +12,7 @@ public:
     myQueue() {};
     ~myQueue()
     {
-        while(begin)
+        while(begin != NULL)
         {
             List* tmp = begin;
             begin = begin->next;
@@ -42,15 +42,17 @@ public:
 
     void pop()
     {
-        try{
+        try
+        {
             if(begin == NULL) {throw ex2;}
-            if (begin == end) end = NULL;
+            if(begin == end) {end = NULL;}
             List* el = begin;
             begin = begin->next;
             delete el;
             size--;
         }
-        catch(std::exception& e){
+        catch(std::exception& e)
+        {
             std::cout << e.what() << std::endl;
         }
     }
@@ -62,10 +64,7 @@ public:
             int el = begin->num;
             return el;
         }
-        else
-        {
-            return 0;
-        }
+        return 0;
     }
 
     int print_size()
@@ -75,7 +74,8 @@ public:
 
     void Print()
     {
-        try{
+        try
+        {
             List* temp = begin;
             if(temp == NULL)
             {
@@ -89,7 +89,8 @@ public:
             }
             std::cout << std::endl;
         }
-        catch (std::exception& e){
+        catch (std::exception& e)
+        {
             std::cout << e.what() << std::endl;
         }
 
