@@ -26,7 +26,8 @@ int main(int argc, char *argv[])
     int change_class = 1; //выбор класса
     int change_queue =1; //выбор действя для queue (class)
     unsigned int s_time;
-    while((change_class>=1) && (change_class<=2)) {
+    while((change_class>=1) && (change_class<=2))
+    {
         /*---------------------------------------------*/
         log.print("It's work!"); // класс Logger
         /*---------------------------------------------*/
@@ -37,7 +38,8 @@ int main(int argc, char *argv[])
         cout << "Press any key to exit" << endl;
         cin >> change_class;
 
-        switch (change_class){
+        switch (change_class)
+        {
             case 1:
                 cout << "Change:" << endl;
                 cout << "1 - Add element to back" << endl;
@@ -48,7 +50,8 @@ int main(int argc, char *argv[])
                 cout << "6 - Quit" << endl;
                 cin >> change_queue;
 
-                switch (change_queue){
+                switch (change_queue)
+                {
                     case 1:
                         cout << "Enter element: ";
                         cin >> el;
@@ -58,8 +61,15 @@ int main(int argc, char *argv[])
                         myQu->pop();
                         break;
                     case 3:
-                        if(myQu->head_element() != 0) cout << myQu->head_element() << endl;
-                        else cout << "Queue have not elements!" << endl;
+                        try
+                        {
+                            if(myQu->head_element() == 0) {throw ex2;}
+                            cout << myQu->head_element() << endl;
+                        }
+                        catch (std::exception& e)
+                        {
+                            std::cout << e.what() << std::endl;
+                        }
                         break;
                     case 4:
                         cout << "Size: " << myQu->print_size() << endl;
@@ -87,7 +97,8 @@ int main(int argc, char *argv[])
                 cout << "9 - Quit" << endl;
                 cin >> change;
 
-                switch (change) {
+                switch (change)
+                {
                     case 1:
                         cout << "Enter element: ";
                         cin >> el;
@@ -105,12 +116,26 @@ int main(int argc, char *argv[])
                         myDequ->pop_back();
                         break;
                     case 5:
-                        if(myDequ->head_element() != 0) cout << myDequ->head_element() << endl;
-                        else cout << "Queue have not elements!" << endl;
+                        try
+                        {
+                            if(myDequ->head_element() == 0) {throw ex2;}
+                            cout << myDequ->head_element() << endl;
+                        }
+                        catch (std::exception& e)
+                        {
+                            std::cout << e.what() << std::endl;
+                        }
                         break;
                     case 6:
-                        if(myDequ->end_element() != 0) cout << myDequ->end_element() << endl;
-                        else cout << "Queue have not elements!" << endl;
+                        try
+                        {
+                            if(myDequ->end_element() == 0) {throw ex2;}
+                            cout << myDequ->end_element() << endl;
+                        }
+                        catch (std::exception& e)
+                        {
+                            std::cout << e.what() << std::endl;
+                        }
                         break;
                     case 7:
                         cout << "Size: " << myDequ->print_size() << endl;
