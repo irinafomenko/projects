@@ -12,7 +12,7 @@ public:
     myDeque(){};
     ~myDeque()
     {
-        while(begin)
+        while(begin != NULL)
         {
             List* tmp = begin;
             begin = begin->next;
@@ -66,9 +66,10 @@ public:
 
     void pop_back()
     {
-        try{
+        try
+        {
             if(end == NULL) {throw ex2;}
-            if (begin == end) begin = NULL;
+            if (begin == end) {begin = NULL;}
             List* el = end;
             end = end->prev;
             delete el;
@@ -78,7 +79,8 @@ public:
             }
             size--;
         }
-        catch(std::exception& e){
+        catch(std::exception& e)
+        {
             std::cout << e.what() << std::endl;
         }
 
@@ -86,15 +88,12 @@ public:
 
     int end_element()
     {
-        if(end!=NULL)
+        if(end != NULL)
         {
             int el = end->num;
             return el;
         }
-        else
-        {
-            return 0;
-        }
+        return 0;
     }
 };
 
