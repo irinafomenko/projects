@@ -9,15 +9,16 @@
 #include <fstream>
 #include <chrono>
 #include <ctime>
+#include <cstring>
 
 class Logger {
 public:
     std::ofstream log_file;
     Logger(const char * fname) {
         std::cerr << "\nOpening log file." << std::endl;
-        log_file.open(fname);
         //always append to the EOF since we need to save all our logs
-        std::ofstream log_file(fname, std::ios::app);
+        log_file.open(fname, std::ios::app);
+        //std::ofstream log_file(fname, std::ios::app);
     }
     ~Logger() {
         std::cerr << "Closing log file." << std::endl;
@@ -26,9 +27,15 @@ public:
     void print(const char * str) {
         auto current_time = std::chrono::system_clock::now();
         time_t now = std::chrono::system_clock::to_time_t(current_time);
+        /*----------костыль для символа новой строки----------*/
+        std::string t = std::ctime(&now);
+        char temp [256];
+        strcpy (temp, t.c_str());
+        temp [strlen(temp)- 1]= 0;
+        /*----------------------------------------------------*/
         if (log_file.is_open()) {
             //print time with log messages to detect when event happens
-            log_file << std::ctime(&now) << " | " << str << std::endl;
+            log_file << temp << " | " << str << std::endl;
         } else {
             std::cerr <<"Logger doesn't work!" << std::endl;
         }
