@@ -54,24 +54,20 @@ public:
     {
         if(begin != NULL)
         {
-            int el = begin->num;
-            return el;
+            return begin->num;
         }
         return 0;
     }
 
-    int print_size()
+    int size_of_queue()
     {
         return size;
     }
 
-    void Print()
+    void print()
     {
+            if(begin == NULL) {throw ex2;}
             List* temp = begin;
-            if(temp == NULL)
-            {
-                throw ex2;
-            }
             while (temp != NULL)
             {
                 int el = temp->num;
