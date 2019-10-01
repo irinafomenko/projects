@@ -18,6 +18,17 @@ protected:
         List* next;
         List* prev;
         List(): next(NULL), prev(NULL){};
+        List(int n, List* head): prev(NULL)
+        {
+            num = n;
+            next = head;
+        };
+        List(int n, List* head, List* tail)
+        {
+            num = n;
+            next = head;
+            prev = tail;
+        };
     }*begin, *end;
     int size = 0;
 public:
