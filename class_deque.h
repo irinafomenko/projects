@@ -66,8 +66,6 @@ public:
 
     void pop_back()
     {
-        try
-        {
             if(end == NULL) {throw ex2;}
             if (begin == end) {begin = NULL;}
             List* el = end;
@@ -78,11 +76,6 @@ public:
                 end->next = NULL;
             }
             size--;
-        }
-        catch(std::exception& e)
-        {
-            std::cout << e.what() << std::endl;
-        }
 
     }
 
