@@ -29,13 +29,11 @@ public:
         time_t now = std::chrono::system_clock::to_time_t(current_time);
         /*----------костыль для символа новой строки----------*/
         std::string t = std::ctime(&now);
-        char temp [256];
-        strcpy (temp, t.c_str());
-        temp [strlen(temp)- 1]= 0;
+        t [t.std::string::length() - 1]= 0;
         /*----------------------------------------------------*/
         if (log_file.is_open()) {
             //print time with log messages to detect when event happens
-            log_file << temp << " | " << str << std::endl;
+            log_file << t << " | " << str << std::endl;
         } else {
             std::cerr <<"Logger doesn't work!" << std::endl;
         }
