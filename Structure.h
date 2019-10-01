@@ -27,9 +27,9 @@ public:
     virtual void push_front(int n) {};
     virtual void pop() {};
     virtual void pop_back() {};
-    virtual int head_element() {return 0;};
-    virtual int end_element() { return 0;};
-    virtual int print_size() {return 0;};
+    virtual int head_element() {return begin->num;};
+    virtual int end_element() { return end->num;};
+    virtual int size_of_queue() {return size;};
 };
 
 #endif //SPISOK_2_STRUCTURE_H
