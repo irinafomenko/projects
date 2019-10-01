@@ -24,19 +24,13 @@ public:
     {
         if(end != NULL)
         {
-            List* temp = new List;
-            temp->num = n;
-            temp->next = NULL;
-            temp->prev = end;
+            List* temp = new List(n, NULL, end);
             end->next = temp;
             end = end->next;
         }
         else
         {
-            end = new List;
-            end->num = n;
-            end->next = NULL;
-            end->prev = NULL;
+            end = new List(n, NULL, NULL);
             begin = end;
         }
         size++;
@@ -46,19 +40,13 @@ public:
     {
         if(begin != NULL)
         {
-            List* tmp = new List;
-            tmp->num = n;
-            tmp->prev = NULL;
-            tmp->next = begin;
+            List* tmp = new List(n, begin, NULL);
             begin->prev = tmp;
             begin = tmp;
         }
         else
         {
-            begin = new List;
-            begin->num = n;
-            begin->prev = NULL;
-            begin->next = NULL;
+            begin = new List(n, NULL, NULL);
             end = begin;
         }
         size++;
