@@ -83,8 +83,7 @@ public:
     {
         if(end != NULL)
         {
-            int el = end->num;
-            return el;
+            return end->num;
         }
         return 0;
     }
