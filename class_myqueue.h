@@ -24,17 +24,13 @@ public:
     {
         if(end != NULL)
         {
-            List* temp = new List;
-            temp->num = n;
-            temp->next = NULL;
+            List* temp = new List(n, NULL);
             end->next = temp;
             end = end->next;
         }
         else
         {
-            end = new List;
-            end->num = n;
-            end->next = NULL;
+            end = new List(n, NULL);
             begin = end;
         }
         size++;
