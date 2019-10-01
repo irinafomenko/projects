@@ -66,10 +66,10 @@ int main(int argc, char *argv[])
                             cout << myQu->head_element() << endl;
                             break;
                         case 4:
-                            cout << "Size: " << myQu->print_size() << endl;
+                            cout << "Size: " << myQu->size_of_queue() << endl;
                             break;
                         case 5:
-                            myQu->Print();
+                            myQu->print();
                             break;
                         case 6:
                             break;
@@ -118,10 +118,10 @@ int main(int argc, char *argv[])
                             cout << myDequ->end_element() << endl;
                             break;
                         case 7:
-                            cout << "Size: " << myDequ->print_size() << endl;
+                            cout << "Size: " << myDequ->size_of_queue() << endl;
                             break;
                         case 8:
-                            myDequ->Print();
+                            myDequ->print();
                             break;
                         case 9:
                             break;
