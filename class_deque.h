@@ -73,7 +73,8 @@ public:
         {
             return end->num;
         }
-        return 0;
+        throw ex2;
+        //return 0;
     }
 };
 
