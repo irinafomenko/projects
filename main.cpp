@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
                             myQu->pop();
                             break;
                         case 3:
-                            if(myQu->head_element() == 0) {throw ex2;}
+                            //if(myQu->head_element() == 0) {throw ex2;}
                             cout << myQu->head_element() << endl;
                             break;
                         case 4:
@@ -110,11 +110,11 @@ int main(int argc, char *argv[])
                             myDequ->pop_back();
                             break;
                         case 5:
-                            if(myDequ->head_element() == 0) {throw ex2;}
+                            //if(myDequ->head_element() == 0) {throw ex2;}
                             cout << myDequ->head_element() << endl;
                             break;
                         case 6:
-                            if(myDequ->end_element() == 0) {throw ex2;}
+                            //if(myDequ->end_element() == 0) {throw ex2;}
                             cout << myDequ->end_element() << endl;
                             break;
                         case 7:
