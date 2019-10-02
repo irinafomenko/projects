@@ -52,7 +52,8 @@ public:
         {
             return begin->num;
         }
-        return 0;
+        throw ex2;
+        //return 0;
     }
 
     int size_of_queue()
