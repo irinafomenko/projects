@@ -14,10 +14,11 @@ myexception ex2;
 std::mutex m; //мьютекс
 std::unique_lock<std::mutex> guard(m, std::defer_lock);
 class Structure {
-protected:
+public:
     struct List
     {
         int num;
+        std::string command;
         List* next;
         List* prev;
         List(): next(NULL), prev(NULL){};
@@ -25,6 +26,18 @@ protected:
         {
             num = n;
             next = head;
+        };
+        List(int n, List* head, std::string com): prev(NULL)
+        {
+            num = n;
+            next = head;
+            command = com;
+        };
+        List(List* head, std::string com): prev(NULL)
+        {
+            //num = n;
+            next = head;
+            command = com;
         };
         List(int n, List* head, List* tail)
         {
@@ -42,6 +55,7 @@ public:
     virtual void pop() {};
     virtual void pop_back() {};
     virtual int head_element() {return begin->num;};
+    virtual List* head_element_queue() {return begin;}
     virtual int end_element() { return end->num;};
     virtual int size_of_queue() {return size;};
 };
