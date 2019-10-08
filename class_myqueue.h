@@ -7,6 +7,7 @@
 
 #include "Structure.h"
 
+
 class myQueue: public Structure{
 public:
     myQueue() {};

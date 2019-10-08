@@ -22,6 +22,7 @@ public:
 
     void push(int n)
     {
+        m.lock();
         if(end != NULL)
         {
             List* temp = new List(n, NULL, end);
@@ -34,6 +35,7 @@ public:
             begin = end;
         }
         size++;
+        m.unlock();
     }
 
     void push_front(int n)
