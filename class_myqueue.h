@@ -37,6 +37,38 @@ public:
         size++;
     }
 
+    void push(int n, std::string com)
+    {
+        if(end != NULL)
+        {
+            List* temp = new List(n, NULL, com);
+            end->next = temp;
+            end = end->next;
+        }
+        else
+        {
+            end = new List(n, NULL, com);
+            begin = end;
+        }
+        size++;
+    }
+
+    void push(std::string com)
+    {
+        if(end != NULL)
+        {
+            List* temp = new List(NULL, com);
+            end->next = temp;
+            end = end->next;
+        }
+        else
+        {
+            end = new List(NULL, com);
+            begin = end;
+        }
+        size++;
+    }
+
     void pop()
     {
             if(begin == NULL) {throw ex2;}
@@ -52,6 +84,26 @@ public:
         if(begin != NULL)
         {
             return begin->num;
+        }
+        throw ex2;
+        //return 0;
+    }
+
+    List* head_element_queue()
+    {
+        if(begin != NULL)
+        {
+            return begin;
+        }
+        throw ex2;
+        //return 0;
+    }
+
+    List* end_element_string()
+    {
+        if(end != NULL)
+        {
+            return end;
         }
         throw ex2;
         //return 0;
@@ -75,6 +127,8 @@ public:
             std::cout << std::endl;
 
     }
+
+
 };
 
 #endif //SPISOK_2_CLASS_MYQUEUE_H
