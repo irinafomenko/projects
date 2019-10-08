@@ -13,15 +13,16 @@ using namespace std;
 myQueue* myQu = new myQueue;
 myDeque* myDequ = new myDeque;
 /*---------------------------------------------*/
-list <string> my_commands;
-list <int> elements;
+//list <string> my_commands;
+//list <int> elements;
+myQueue* my_command = new myQueue;
 mutex mut;
 /*---------------------------------------------*/
 /*---------------------------------------------*/
 Logger log("log_example.txt"); // класс Logger
 /*---------------------------------------------*/
 
-int xtime = 10;
+int xtime = 5;
 int change = 1;
 void func_for_thread()
 {
@@ -30,7 +31,7 @@ void func_for_thread()
     while(change != 9)
     {
         this_thread::sleep_for(std::chrono::seconds(xtime));
-        list<int>::iterator el = elements.begin();
+        /*list<int>::iterator el = elements.begin();
         for (list<string>::iterator k = my_commands.begin(); k != my_commands.end(); ++k) {
             if (*k == "push") {
                 myDequ->push(*el);
@@ -46,14 +47,37 @@ void func_for_thread()
             if (*k == "end_element") { cout << myDequ->end_element() << endl; }
             if (*k == "size_of_queue") { cout << myDequ->size_of_queue() << endl; }
             if (*k == "print") { myDequ->print(); }
-            /*---------------------------------------------*/
-            log.print("It's thread 2! | Выполнил команду!"); // класс Logger
-            /*---------------------------------------------*/
+        }*/
+        Structure::List* k = my_command->head_element_queue();
+        mut.lock();
+        for(int i = 0; i != my_command->size_of_queue(); i++)
+        //while(my_command->size_of_queue() != 0)
+        {
+            cout << k->command << endl;
+            if (k->command == "push")
+            {
+                myDequ->push(k->num);
+            }
+            if (k->command == "push_front")
+            {
+                myDequ->push_front(k->num);
+            }
+            if (k->command == "pop") { myDequ->pop(); }
+            if (k->command == "pop_back") { myDequ->pop_back(); }
+            if (k->command == "head_element") { cout << myDequ->head_element() << endl; }
+            if (k->command == "end_element") { cout << myDequ->end_element() << endl; }
+            if (k->command == "size_of_queue") { cout << myDequ->size_of_queue() << endl; }
+            if (k->command == "print") { myDequ->print();}
+            k = k->next;
+            //my_command->pop();
         }
-        //break;
-        //n++;
-        //my_commands.clear();
-        //elements.clear();
+    mut.unlock();
+        mut.lock();
+        my_command->pop();
+        /*---------------------------------------------*/
+        log.print("It's thread 2! | Выполнил команды!"); // класс Logger
+        /*---------------------------------------------*/
+        mut.unlock();
     }
 }
 
@@ -76,7 +100,9 @@ void main_menu()
         cout << "7 - Print size" << endl;
         cout << "8 - Print deque" << endl;
         cout << "9 - Quit" << endl;
+        //mut.lock();
         cin >> change;
+        //mut.unlock();
 
         try {
             switch (change) {
@@ -85,52 +111,60 @@ void main_menu()
                     cout << "Enter element: ";
                     cin >> el;
                     //myDequ->push(el);
-                    elements.push_back(el);
-                    my_commands.push_back("push");
+                    my_command->push(el, "push");
+                    //elements.push_back(el);
+                    //my_commands.push_back("push");
                     break;
                 }
                 case 2:
                 {
                     cout << "Enter element: ";
                     cin >> el;
-                    elements.push_back(el);
-                    my_commands.push_back("push_front");
+                    my_command->push(el, "push_front");
+                    //elements.push_back(el);
+                    //my_commands.push_back("push_front");
                     //myDequ->push_front(el);
                     break;
                 }
                 case 3:
                 {
-                    my_commands.push_back("pop");
+                    my_command->push( "pop");
+                    //my_commands.push_back("pop");
                     //myDequ->pop();
                     break;
                 }
                 case 4:
                 {
-                    my_commands.push_back("pop_back");
+                    my_command->push( "pop_back");
+                    //my_commands.push_back("pop_back");
                     //myDequ->pop_back();
                     break;
                 }
                 case 5:
                 {
-                    my_commands.push_back("head_element");
+                    my_command->push( "head_element");
+                    //my_commands.push_back("head_element");
                     //cout << myDequ->head_element() << endl;
                     break;
                 }
                 case 6:
                 {
-                    my_commands.push_back("end_element");
+                    my_command->push( "end_element");
+                    //my_commands.push_back("end_element");
                     //cout << myDequ->end_element() << endl;
                     break;
                 }
                 case 7:
                 {
-                    my_commands.push_back("size_of_queue");
+                    my_command->push( "size_of_queue");
+                    //my_commands.push_back("size_of_queue");
                     //cout << "Size: " << myDequ->size_of_queue() << endl;
                     break;
                 }
                 case 8:
                 {
-                    my_commands.push_back("print");
+                    my_command->push( "print");
+                    //my_commands.push_back("print");
                     //myDequ->print();
                     break;
                 }
