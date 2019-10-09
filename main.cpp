@@ -13,8 +13,6 @@ using namespace std;
 myQueue* myQu = new myQueue;
 myDeque* myDequ = new myDeque;
 /*---------------------------------------------*/
-//list <string> my_commands;
-//list <int> elements;
 myQueue* my_command = new myQueue;
 mutex mut;
 /*---------------------------------------------*/
@@ -31,29 +29,11 @@ void func_for_thread()
     while(change != 9)
     {
         this_thread::sleep_for(std::chrono::seconds(xtime));
-        /*list<int>::iterator el = elements.begin();
-        for (list<string>::iterator k = my_commands.begin(); k != my_commands.end(); ++k) {
-            if (*k == "push") {
-                myDequ->push(*el);
-                ++el;
-            }
-            if (*k == "push_front") {
-                myDequ->push_front(*el);
-                ++el;
-            }
-            if (*k == "pop") { myDequ->pop(); }
-            if (*k == "pop_back") { myDequ->pop_back(); }
-            if (*k == "head_element") { cout << myDequ->head_element() << endl; }
-            if (*k == "end_element") { cout << myDequ->end_element() << endl; }
-            if (*k == "size_of_queue") { cout << myDequ->size_of_queue() << endl; }
-            if (*k == "print") { myDequ->print(); }
-        }*/
         Structure::List* k = my_command->head_element_queue();
         mut.lock();
         for(int i = 0; i != my_command->size_of_queue(); i++)
-        //while(my_command->size_of_queue() != 0)
         {
-            cout << k->command << endl;
+            cout << k->command << endl;// чтобы знать какая команда выполняется
             if (k->command == "push")
             {
                 myDequ->push(k->num);
@@ -71,7 +51,7 @@ void func_for_thread()
             k = k->next;
             //my_command->pop();
         }
-    mut.unlock();
+        mut.unlock();
         mut.lock();
         my_command->pop();
         /*---------------------------------------------*/
@@ -91,7 +71,7 @@ void main_menu()
     int el;
     while((change >= 1) && (change <= 8))
     {
-        mut.lock();
+        mut.lock();//чтобы второй поток ничего не выводила пока не выбрана команда
         cout << "1 - Add element to back" << endl;
         cout << "2 - Add element to front" << endl;
         cout << "3 - Delete first element" << endl;
@@ -105,70 +85,41 @@ void main_menu()
         cin >> change;
         mut.unlock();
 
-        try {
+        try
+        {
             switch (change) {
                 case 1:
-                {
+                    mut.lock();//также чтобы не разрывались строчки
                     cout << "Enter element: ";
                     cin >> el;
-                    //myDequ->push(el);
+                    mut.unlock();
                     my_command->push(el, "push");
-                    //elements.push_back(el);
-                    //my_commands.push_back("push");
                     break;
-                }
                 case 2:
-                {
+                    mut.lock();
                     cout << "Enter element: ";
                     cin >> el;
+                    mut.unlock();
                     my_command->push(el, "push_front");
-                    //elements.push_back(el);
-                    //my_commands.push_back("push_front");
-                    //myDequ->push_front(el);
                     break;
-                }
                 case 3:
-                {
                     my_command->push( "pop");
-                    //my_commands.push_back("pop");
-                    //myDequ->pop();
                     break;
-                }
                 case 4:
-                {
                     my_command->push( "pop_back");
-                    //my_commands.push_back("pop_back");
-                    //myDequ->pop_back();
                     break;
-                }
                 case 5:
-                {
                     my_command->push( "head_element");
-                    //my_commands.push_back("head_element");
-                    //cout << myDequ->head_element() << endl;
                     break;
-                }
                 case 6:
-                {
                     my_command->push( "end_element");
-                    //my_commands.push_back("end_element");
-                    //cout << myDequ->end_element() << endl;
                     break;
-                }
                 case 7:
-                {
                     my_command->push( "size_of_queue");
-                    //my_commands.push_back("size_of_queue");
-                    //cout << "Size: " << myDequ->size_of_queue() << endl;
                     break;
-                }
                 case 8:
-                {
                     my_command->push( "print");
-                    //my_commands.push_back("print");
-                    //myDequ->print();
                     break;
-                }
                 case 9:
                     break;
                 default:
