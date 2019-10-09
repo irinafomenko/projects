@@ -91,6 +91,7 @@ void main_menu()
     int el;
     while((change >= 1) && (change <= 8))
     {
+        mut.lock();
         cout << "1 - Add element to back" << endl;
         cout << "2 - Add element to front" << endl;
         cout << "3 - Delete first element" << endl;
@@ -102,7 +103,7 @@ void main_menu()
         cout << "9 - Quit" << endl;
         //mut.lock();
         cin >> change;
-        //mut.unlock();
+        mut.unlock();
 
         try {
             switch (change) {
@@ -178,9 +179,11 @@ void main_menu()
         {
             std::cout << e.what() << std::endl;
         }
+        m.lock();
         /*---------------------------------------------*/
         log.print("It's thread 1! | Получил команду!"); // класс Logger
         /*---------------------------------------------*/
+        m.unlock();
     }
     my_thread_2.join();
 
