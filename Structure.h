@@ -8,11 +8,8 @@
 #include <iostream>
 #include <windef.h>
 #include "my_exceptions.h"
-#include <mutex>
 
 myexception ex2;
-std::mutex m; //мьютекс
-std::unique_lock<std::mutex> guard(m, std::defer_lock);
 class Structure {
 public:
     struct List
