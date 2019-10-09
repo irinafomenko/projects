@@ -20,7 +20,7 @@ mutex mut;
 Logger log("log_example.txt"); // класс Logger
 /*---------------------------------------------*/
 
-int xtime = 5;
+int xtime = 10;
 int change = 1;
 void func_for_thread()
 {
@@ -31,7 +31,7 @@ void func_for_thread()
         this_thread::sleep_for(std::chrono::seconds(xtime));
         Structure::List* k = my_command->head_element_queue();
         mut.lock();
-        for(int i = 0; i != my_command->size_of_queue(); i++)
+        for(int i = 0; i < my_command->size_of_queue(); i++)
         {
             cout << k->command << endl;// чтобы знать какая команда выполняется
             if (k->command == "push")
@@ -49,11 +49,11 @@ void func_for_thread()
             if (k->command == "size_of_queue") { cout << myDequ->size_of_queue() << endl; }
             if (k->command == "print") { myDequ->print();}
             k = k->next;
-            //my_command->pop();
+            my_command->pop();// чтобы очередь команд каждый раз не повторялась
         }
         mut.unlock();
         mut.lock();
-        my_command->pop();
+        //my_command->pop();
         /*---------------------------------------------*/
         log.print("It's thread 2! | Выполнил команды!"); // класс Logger
         /*---------------------------------------------*/
@@ -130,11 +130,11 @@ void main_menu()
         {
             std::cout << e.what() << std::endl;
         }
-        m.lock();
+        mut.lock();
         /*---------------------------------------------*/
         log.print("It's thread 1! | Получил команду!"); // класс Logger
         /*---------------------------------------------*/
-        m.unlock();
+        mut.unlock();
     }
     my_thread_2.join();
 
