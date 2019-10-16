@@ -36,7 +36,7 @@ public:
         }
         size++;
     }
-
+    /*---------------------------------------------*/
     void push(int n, std::string com)
     {
         if(end != NULL)
@@ -69,6 +69,16 @@ public:
         size++;
     }
 
+    std::pair<std::string, int> head()
+    {
+        if(begin != NULL)
+        {
+            return begin->commands;
+        }
+        throw ex2;
+        //return 0;
+    }
+    /*---------------------------------------------*/
     void pop()
     {
             if(begin == NULL) {throw ex2;}
@@ -77,36 +87,6 @@ public:
             begin = begin->next;
             delete el;
             size--;
-    }
-
-    int head_element()
-    {
-        if(begin != NULL)
-        {
-            return begin->num;
-        }
-        throw ex2;
-        //return 0;
-    }
-
-    List* head_element_queue()
-    {
-        if(begin != NULL)
-        {
-            return begin;
-        }
-        throw ex2;
-        //return 0;
-    }
-
-    List* end_element_string()
-    {
-        if(end != NULL)
-        {
-            return end;
-        }
-        throw ex2;
-        //return 0;
     }
 
     int size_of_queue()
