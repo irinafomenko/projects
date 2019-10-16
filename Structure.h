@@ -11,11 +11,31 @@
 
 myexception ex2;
 class Structure {
-public:
-    struct List
+protected:
+    /*struct Data
     {
         int num;
         std::string command;
+        Data* next;
+        Data(): next(NULL) {};
+        Data(int n, Data* head, std::string cmd)
+        {
+            num = n;
+            next = head;
+            command = cmd;
+        };
+        Data(Data* head, std::string cmd)
+        {
+            //num = n;
+            next = head;
+            command = cmd;
+        };
+    }*head, *tail;*/
+    struct List
+    {
+        int num;
+        std::pair<std::string, int> commands;
+        //std::string command;
         List* next;
         List* prev;
         List(): next(NULL), prev(NULL){};
@@ -24,18 +44,25 @@ public:
             num = n;
             next = head;
         };
+        /*---------------------------------------------*/
         List(int n, List* head, std::string com): prev(NULL)
         {
-            num = n;
-            next = head;
-            command = com;
-        };
-        List(List* head, std::string com): prev(NULL)
-        {
+            commands.first = com;
+            commands.second = n;
             //num = n;
             next = head;
-            command = com;
+            //command = com;
         };
+
+        List(List* head, std::string com): prev(NULL)
+        {
+            commands.first = com;
+            commands.second = 0;
+            //num = n;
+            next = head;
+            //command = com;
+        };
+        /*---------------------------------------------*/
         List(int n, List* head, List* tail)
         {
             num = n;
@@ -51,8 +78,7 @@ public:
     virtual void push_front(int n) {};
     virtual void pop() {};
     virtual void pop_back() {};
-    virtual int head_element() {return begin->num;};
-    virtual List* head_element_queue() {return begin;}
+    virtual int begin_element() {return begin->num;};
     virtual int end_element() { return end->num;};
     virtual int size_of_queue() {return size;};
 };
