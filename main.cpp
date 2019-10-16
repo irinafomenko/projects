@@ -29,8 +29,9 @@ void func_for_thread()
     while(change != 9)
     {
         this_thread::sleep_for(std::chrono::seconds(xtime));
-        Structure::List* k = my_command->head_element_queue();
+
         mut.lock();
+        /*
         for(int i = 0; i < my_command->size_of_queue(); i++)
         {
             cout << k->command << endl;// чтобы знать какая команда выполняется
@@ -44,11 +45,33 @@ void func_for_thread()
             }
             if (k->command == "pop") { myDequ->pop(); }
             if (k->command == "pop_back") { myDequ->pop_back(); }
-            if (k->command == "head_element") { cout << myDequ->head_element() << endl; }
+            if (k->command == "head_element") { cout << myDequ->begin_element() << endl; }
             if (k->command == "end_element") { cout << myDequ->end_element() << endl; }
             if (k->command == "size_of_queue") { cout << myDequ->size_of_queue() << endl; }
             if (k->command == "print") { myDequ->print();}
             k = k->next;
+            my_command->pop();// чтобы очередь команд каждый раз не повторялась
+        }
+         */
+        for(int i = 0; i <= my_command->size_of_queue(); i++)
+        {
+            pair<std::string, int> k = my_command->head();
+            cout << k.first << endl;// чтобы знать какая команда выполняется
+            if (k.first == "push")
+            {
+                myDequ->push(k.second);
+            }
+            if (k.first == "push_front")
+            {
+                myDequ->push_front(k.second);
+            }
+            if (k.first == "pop") { myDequ->pop(); }
+            if (k.first == "pop_back") { myDequ->pop_back(); }
+            if (k.first == "head_element") { cout << myDequ->begin_element() << endl; }
+            if (k.first == "end_element") { cout << myDequ->end_element() << endl; }
+            if (k.first == "size_of_queue") { cout << myDequ->size_of_queue() << endl; }
+            if (k.first == "print") { myDequ->print();}
+
             my_command->pop();// чтобы очередь команд каждый раз не повторялась
         }
         mut.unlock();
@@ -109,7 +132,7 @@ void main_menu()
                     my_command->push( "pop_back");
                     break;
                 case 5:
-                    my_command->push( "head_element");
+                    my_command->push( "begin_element");
                     break;
                 case 6:
                     my_command->push( "end_element");
