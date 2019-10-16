@@ -67,6 +67,16 @@ public:
 
     }
 
+    int begin_element()
+    {
+        if(begin != NULL)
+        {
+            return begin->num;
+        }
+        throw ex2;
+        //return 0;
+    }
+
     int end_element()
     {
         if(end != NULL)
