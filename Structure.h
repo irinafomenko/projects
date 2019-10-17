@@ -8,8 +8,11 @@
 #include <iostream>
 #include <windef.h>
 #include "my_exceptions.h"
+#include "Logger.h"
 
 myexception ex2;
+Logger logg("log_example.txt");
+
 class Structure {
 protected:
     struct List

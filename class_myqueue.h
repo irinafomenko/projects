@@ -20,43 +20,51 @@ public:
             delete tmp;
         }
     }
-
+    /*
     void push(int n)
     {
+        logg.print("push() function");
         if(end != NULL)
         {
             List* temp = new List(n, NULL);
             end->next = temp;
             end = end->next;
+            logg.print("Add element");
         }
         else
         {
             end = new List(n, NULL);
             begin = end;
+            logg.print("Add element");
         }
         size++;
-    }
+    }*/
     /*---------------------------------------------*/
     void push(std::string com, int n = 0)
     {
+        logg.print("push function of queue");
         if(end != NULL)
         {
             List* temp = new List(n, NULL, com);
             end->next = temp;
             end = end->next;
+            logg.print("Add element " + std::to_string(n));
         }
         else
         {
             end = new List(n, NULL, com);
             begin = end;
+            logg.print("Add element " + std::to_string(n));
         }
         size++;
     }
-    
+
     std::pair<std::string, int> head()
     {
+        logg.print("head() function of queue");
         if(begin != NULL)
         {
+            logg.print("Return head element");
             return begin->commands;
         }
         throw ex2;
@@ -65,31 +73,36 @@ public:
     /*---------------------------------------------*/
     void pop()
     {
-            if(begin == NULL) {throw ex2;}
-            if(begin == end) {end = NULL;}
-            List* el = begin;
-            begin = begin->next;
-            delete el;
-            size--;
+        logg.print("pop() function");
+        if(begin == NULL) {throw ex2;}
+        if(begin == end) {end = NULL;}
+        List* el = begin;
+        begin = begin->next;
+        delete el;
+        size--;
+        logg.print("Deleted first element");
     }
 
     int size_of_queue()
     {
+        logg.print("size_of_queue() function");
+        logg.print("Return size of queue");
         return size;
     }
 
     void print()
     {
-            if(begin == NULL) {throw ex2;}
-            List* temp = begin;
-            while (temp != NULL)
-            {
-                int el = temp->num;
-                std::cout << el << " ";
-                temp = temp->next;
-            }
-            std::cout << std::endl;
-
+        logg.print("print() function");
+        if(begin == NULL) {throw ex2;}
+        List* temp = begin;
+        while (temp != NULL)
+        {
+            int el = temp->num;
+            std::cout << el << " ";
+            temp = temp->next;
+        }
+        std::cout << std::endl;
+        logg.print("Print queue");
     }
 
 
