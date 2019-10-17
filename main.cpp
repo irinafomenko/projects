@@ -10,9 +10,7 @@
 using namespace std;
 
 /*---------------------------------------------*/
-myQueue* myQu = new myQueue;
 myDeque* myDequ = new myDeque;
-/*---------------------------------------------*/
 myQueue* my_command = new myQueue;
 mutex mut;
 /*---------------------------------------------*/
@@ -31,28 +29,6 @@ void func_for_thread()
         this_thread::sleep_for(std::chrono::seconds(xtime));
 
         mut.lock();
-        /*
-        for(int i = 0; i < my_command->size_of_queue(); i++)
-        {
-            cout << k->command << endl;// чтобы знать какая команда выполняется
-            if (k->command == "push")
-            {
-                myDequ->push(k->num);
-            }
-            if (k->command == "push_front")
-            {
-                myDequ->push_front(k->num);
-            }
-            if (k->command == "pop") { myDequ->pop(); }
-            if (k->command == "pop_back") { myDequ->pop_back(); }
-            if (k->command == "head_element") { cout << myDequ->begin_element() << endl; }
-            if (k->command == "end_element") { cout << myDequ->end_element() << endl; }
-            if (k->command == "size_of_queue") { cout << myDequ->size_of_queue() << endl; }
-            if (k->command == "print") { myDequ->print();}
-            k = k->next;
-            my_command->pop();// чтобы очередь команд каждый раз не повторялась
-        }
-         */
         for(int i = 0; i <= my_command->size_of_queue(); i++)
         {
             pair<std::string, int> k = my_command->head();
@@ -116,14 +92,14 @@ void main_menu()
                     cout << "Enter element: ";
                     cin >> el;
                     mut.unlock();
-                    my_command->push(el, "push");
+                    my_command->push("push", el);
                     break;
                 case 2:
                     mut.lock();
                     cout << "Enter element: ";
                     cin >> el;
                     mut.unlock();
-                    my_command->push(el, "push_front");
+                    my_command->push("push_front", el);
                     break;
                 case 3:
                     my_command->push( "pop");
@@ -163,18 +139,9 @@ void main_menu()
 
 }
 
-int main(int argc, char *argv[])
+int main()
 {
 
-    if(argc>1)
-    {
-        for(int i = 1; i < argc; i++)
-        {
-            int el = atoi(argv[i]);
-            myQu->push(el);
-            myDequ->push(el);
-        }
-    }
     /*---------------------------------------------*/
     thread my_thread_1(main_menu); //главное меню
     my_thread_1.join();
