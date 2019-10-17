@@ -23,7 +23,6 @@ int change = 1;
 void func_for_thread()
 {
     cout << "thread" << endl;
-    int n = 0;
     while(change != 9)
     {
         this_thread::sleep_for(std::chrono::seconds(xtime));
@@ -51,12 +50,10 @@ void func_for_thread()
             my_command->pop();// чтобы очередь команд каждый раз не повторялась
         }
         mut.unlock();
-        mut.lock();
         //my_command->pop();
         /*---------------------------------------------*/
         log.print("It's thread 2! | Выполнил команды!"); // класс Logger
         /*---------------------------------------------*/
-        mut.unlock();
     }
 }
 
@@ -129,11 +126,9 @@ void main_menu()
         {
             std::cout << e.what() << std::endl;
         }
-        mut.lock();
         /*---------------------------------------------*/
         log.print("It's thread 1! | Получил команду!"); // класс Logger
         /*---------------------------------------------*/
-        mut.unlock();
     }
     my_thread_2.join();
 
