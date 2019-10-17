@@ -37,7 +37,7 @@ public:
         size++;
     }
     /*---------------------------------------------*/
-    void push(int n, std::string com)
+    void push(std::string com, int n = 0)
     {
         if(end != NULL)
         {
@@ -52,23 +52,7 @@ public:
         }
         size++;
     }
-
-    void push(std::string com)
-    {
-        if(end != NULL)
-        {
-            List* temp = new List(NULL, com);
-            end->next = temp;
-            end = end->next;
-        }
-        else
-        {
-            end = new List(NULL, com);
-            begin = end;
-        }
-        size++;
-    }
-
+    
     std::pair<std::string, int> head()
     {
         if(begin != NULL)
