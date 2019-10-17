@@ -10,8 +10,11 @@
 #include <chrono>
 #include <ctime>
 #include <cstring>
+#include <mutex>
 
 class Logger {
+private:
+    std::mutex mutex;
 public:
     std::ofstream log_file;
     Logger(const char * fname) {
@@ -24,19 +27,21 @@ public:
         std::cerr << "Closing log file." << std::endl;
         log_file.close();
     }
-    void print(const char * str) {
+    void print(std::string str) {
         auto current_time = std::chrono::system_clock::now();
         time_t now = std::chrono::system_clock::to_time_t(current_time);
         /*----------костыль для символа новой строки----------*/
         std::string t = std::ctime(&now);
         t [t.std::string::length() - 1]= 0;
         /*----------------------------------------------------*/
+        mutex.lock();
         if (log_file.is_open()) {
             //print time with log messages to detect when event happens
             log_file << t << " | " << str << std::endl;
         } else {
             std::cerr <<"Logger doesn't work!" << std::endl;
         }
+        mutex.unlock();
     }
 };
 
