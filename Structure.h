@@ -12,25 +12,6 @@
 myexception ex2;
 class Structure {
 protected:
-    /*struct Data
-    {
-        int num;
-        std::string command;
-        Data* next;
-        Data(): next(NULL) {};
-        Data(int n, Data* head, std::string cmd)
-        {
-            num = n;
-            next = head;
-            command = cmd;
-        };
-        Data(Data* head, std::string cmd)
-        {
-            //num = n;
-            next = head;
-            command = cmd;
-        };
-    }*head, *tail;*/
     struct List
     {
         int num;
@@ -49,15 +30,6 @@ protected:
         {
             commands.first = com;
             commands.second = n;
-            //num = n;
-            next = head;
-            //command = com;
-        };
-
-        List(List* head, std::string com): prev(NULL)
-        {
-            commands.first = com;
-            commands.second = 0;
             //num = n;
             next = head;
             //command = com;
