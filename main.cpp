@@ -18,41 +18,47 @@ mutex mut;
 Logger log("log_example.txt"); // класс Logger
 /*---------------------------------------------*/
 
-int xtime = 10;
+int xtime = 1;
 int change = 1;
 void func_for_thread()
 {
-    cout << "thread" << endl;
+    /*---------------------------------------------*/
+    log.print("It's thread 2! | Enter!"); // класс Logger
+    /*---------------------------------------------*/
+    //cout << "thread" << endl;
     while(change != 9)
     {
         this_thread::sleep_for(std::chrono::seconds(xtime));
 
         mut.lock();
-        for(int i = 0; i <= my_command->size_of_queue(); i++)
+        //for(int i = 0; i < my_command->size_of_queue(); i++)
+        while(my_command->size_of_queue() != 0)
         {
             pair<std::string, int> k = my_command->head();
             cout << k.first << endl;// чтобы знать какая команда выполняется
-            if (k.first == "push")
+            //cout << i << endl;
+            try
             {
-                myDequ->push(k.second);
+                if (k.first == "push") { myDequ->push(k.second); }
+                if (k.first == "push_front") { myDequ->push_front(k.second); }
+                if (k.first == "pop") { myDequ->pop(); }
+                if (k.first == "pop_back") { myDequ->pop_back(); }
+                if (k.first == "begin_element") { cout << myDequ->begin_element() << endl; }
+                if (k.first == "end_element") { cout << myDequ->end_element() << endl; }
+                if (k.first == "size_of_queue") { cout << myDequ->size_of_queue() << endl; }
+                if (k.first == "print") { myDequ->print();}
             }
-            if (k.first == "push_front")
+            catch (std::exception& e)
             {
-                myDequ->push_front(k.second);
+                std::cout << e.what() << std::endl;
             }
-            if (k.first == "pop") { myDequ->pop(); }
-            if (k.first == "pop_back") { myDequ->pop_back(); }
-            if (k.first == "head_element") { cout << myDequ->begin_element() << endl; }
-            if (k.first == "end_element") { cout << myDequ->end_element() << endl; }
-            if (k.first == "size_of_queue") { cout << myDequ->size_of_queue() << endl; }
-            if (k.first == "print") { myDequ->print();}
 
             my_command->pop();// чтобы очередь команд каждый раз не повторялась
         }
         mut.unlock();
         //my_command->pop();
         /*---------------------------------------------*/
-        log.print("It's thread 2! | Выполнил команды!"); // класс Logger
+        log.print("It's thread 2! | Exit!"); // класс Logger
         /*---------------------------------------------*/
     }
 }
@@ -62,12 +68,14 @@ void main_menu()
     /*---------------------------------------------*/
     thread my_thread_2(func_for_thread); //создание потоков
     /*---------------------------------------------*/
-
+    /*---------------------------------------------*/
+    log.print("It's thread 1! | Enter!"); // класс Logger
+    /*---------------------------------------------*/
 
     int el;
     while((change >= 1) && (change <= 8))
     {
-        mut.lock();//чтобы второй поток ничего не выводила пока не выбрана команда
+        //mut.lock();//чтобы второй поток ничего не выводил пока не выбрана команда
         cout << "1 - Add element to back" << endl;
         cout << "2 - Add element to front" << endl;
         cout << "3 - Delete first element" << endl;
@@ -79,7 +87,7 @@ void main_menu()
         cout << "9 - Quit" << endl;
         //mut.lock();
         cin >> change;
-        mut.unlock();
+        //mut.unlock();
 
         try
         {
@@ -127,7 +135,7 @@ void main_menu()
             std::cout << e.what() << std::endl;
         }
         /*---------------------------------------------*/
-        log.print("It's thread 1! | Получил команду!"); // класс Logger
+        log.print("It's thread 1! | Exit!"); // класс Logger
         /*---------------------------------------------*/
     }
     my_thread_2.join();
