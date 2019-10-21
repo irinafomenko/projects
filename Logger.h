@@ -15,16 +15,24 @@
 class Logger {
 private:
     std::mutex mutex;
+    const char * comment;
 public:
     std::ofstream log_file;
     Logger(const char * fname) {
-        std::cerr << "\nOpening log file." << std::endl;
+        //std::cerr << "Opening log file." << std::endl;
         //always append to the EOF since we need to save all our logs
         log_file.open(fname, std::ios::app);
         //std::ofstream log_file(fname, std::ios::app);
     }
+    Logger(const char * fname, const char * cmt) {
+        //std::cerr << "Opening log file." << std::endl;
+        //always append to the EOF since we need to save all our logs
+        log_file.open(fname, std::ios::app);
+        //std::ofstream log_file(fname, std::ios::app);
+        comment = cmt;
+    }
     ~Logger() {
-        std::cerr << "Closing log file." << std::endl;
+        //std::cerr << "Closing log file." << std::endl;
         log_file.close();
     }
     void print(std::string str) {
@@ -35,9 +43,19 @@ public:
         t [t.std::string::length() - 1]= 0;
         /*----------------------------------------------------*/
         mutex.lock();
-        if (log_file.is_open()) {
-            //print time with log messages to detect when event happens
-            log_file << t << " | " << str << std::endl;
+        if (log_file.is_open())
+        {
+            if(comment != NULL)
+            {
+                //print time with log messages to detect when event happens
+                log_file << t << " | " << comment << " | " << str << std::endl;
+            }
+            else
+            {
+                //print time with log messages to detect when event happens
+                log_file << t << " | " << str << std::endl;
+            }
+
         } else {
             std::cerr <<"Logger doesn't work!" << std::endl;
         }
