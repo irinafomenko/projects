@@ -11,7 +11,7 @@
 #include "Logger.h"
 
 myexception ex2;
-Logger logg("log_example.txt");
+Logger logg("log_example.txt", "Structure");
 
 class Structure {
 protected:
