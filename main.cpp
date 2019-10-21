@@ -34,11 +34,10 @@ void func_for_thread()
         //for(int i = 0; i < my_command->size_of_queue(); i++)
         while(my_command->size_of_queue() != 0)
         {
-            pair<std::string, int> k = my_command->head();
-            cout << k.first << endl;// чтобы знать какая команда выполняется
-            //cout << i << endl;
             try
             {
+                pair<std::string, int> k = my_command->head();
+                cout << k.first << endl;// чтобы знать какая команда выполняется
                 if (k.first == "push") { myDequ->push(k.second); }
                 if (k.first == "push_front") { myDequ->push_front(k.second); }
                 if (k.first == "pop") { myDequ->pop(); }
@@ -52,8 +51,14 @@ void func_for_thread()
             {
                 std::cout << e.what() << std::endl;
             }
-
-            my_command->pop();// чтобы очередь команд каждый раз не повторялась
+            try
+            {
+                my_command->pop();// чтобы очередь команд каждый раз не повторялась
+            }
+            catch (std::exception& e)
+            {
+                std::cout << e.what() << std::endl;
+            }
         }
         mut.unlock();
         //my_command->pop();
@@ -89,8 +94,8 @@ void main_menu()
         cin >> change;
         //mut.unlock();
 
-        try
-        {
+        //try
+        //{
             switch (change) {
                 case 1:
                     mut.lock();//также чтобы не разрывались строчки
@@ -129,11 +134,11 @@ void main_menu()
                 default:
                     break;
             }
-        }
-        catch (std::exception& e)
-        {
-            std::cout << e.what() << std::endl;
-        }
+        //}
+        //catch (std::exception& e)
+        //{
+        //    std::cout << e.what() << std::endl;
+        //}
         /*---------------------------------------------*/
         log.print("It's thread 1! | Exit!"); // класс Logger
         /*---------------------------------------------*/
