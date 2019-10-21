@@ -7,6 +7,7 @@
 
 #include "Structure.h"
 
+Logger logg_queue("log_example.txt", "Queue");
 
 class myQueue: public Structure{
 public:
@@ -42,29 +43,31 @@ public:
     /*---------------------------------------------*/
     void push(std::string com, int n = 0)
     {
-        logg.print("push function of queue");
+        logg_queue.print("push function of queue");
         if(end != NULL)
         {
             List* temp = new List(n, NULL, com);
             end->next = temp;
             end = end->next;
-            logg.print("Add element " + std::to_string(n));
+            if(n != 0) {logg_queue.print("Add element " + std::to_string(n));}
+            else {logg_queue.print("Add command " + com);}
         }
         else
         {
             end = new List(n, NULL, com);
             begin = end;
-            logg.print("Add element " + std::to_string(n));
+            if(n != 0) {logg_queue.print("Add element " + std::to_string(n));}
+            else {logg_queue.print("Add command " + com);}
         }
         size++;
     }
 
     std::pair<std::string, int> head()
     {
-        logg.print("head() function of queue");
+        logg_queue.print("head() function of queue");
         if(begin != NULL)
         {
-            logg.print("Return head element");
+            logg_queue.print("Return head element");
             return begin->commands;
         }
         throw ex2;
@@ -73,36 +76,38 @@ public:
     /*---------------------------------------------*/
     void pop()
     {
-        logg.print("pop() function");
+        logg_queue.print("pop() function");
         if(begin == NULL) {throw ex2;}
         if(begin == end) {end = NULL;}
         List* el = begin;
         begin = begin->next;
         delete el;
         size--;
-        logg.print("Deleted first element");
+        logg_queue.print("Deleted first element");
     }
 
     int size_of_queue()
     {
-        logg.print("size_of_queue() function");
-        logg.print("Return size of queue");
+        logg_queue.print("size_of_queue() function");
+        logg_queue.print("Return size of queue");
         return size;
     }
 
     void print()
     {
-        logg.print("print() function");
+        logg_queue.print("print() function");
         if(begin == NULL) {throw ex2;}
         List* temp = begin;
+        std::string queue;
         while (temp != NULL)
         {
             int el = temp->num;
             std::cout << el << " ";
+            queue += " " + std::to_string(el);
             temp = temp->next;
         }
         std::cout << std::endl;
-        logg.print("Print queue");
+        logg_queue.print("Print queue" + queue);
     }
 
 
