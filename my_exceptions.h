@@ -7,11 +7,14 @@
 
 #include <exception>
 
+extern Logger logg_deque;
+
 /*----------exception---------------*/
 class myexception: public std::exception
 {
     virtual const char* what() const throw()
     {
+        logg_deque.print("Deque have not elements!");
         return "Queue have not elements!";
     }
 public:
