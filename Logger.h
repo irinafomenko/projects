@@ -22,14 +22,12 @@ public:
         //std::cerr << "Opening log file." << std::endl;
         //always append to the EOF since we need to save all our logs
         log_file.open(fname, std::ios::app);
-        //std::ofstream log_file(fname, std::ios::app);
     }
     Logger(const char * fname, const char * cmt) {
+        comment = cmt;
         //std::cerr << "Opening log file." << std::endl;
         //always append to the EOF since we need to save all our logs
         log_file.open(fname, std::ios::app);
-        //std::ofstream log_file(fname, std::ios::app);
-        comment = cmt;
     }
     ~Logger() {
         //std::cerr << "Closing log file." << std::endl;
@@ -55,7 +53,6 @@ public:
                 //print time with log messages to detect when event happens
                 log_file << t << " | " << str << std::endl;
             }
-
         } else {
             std::cerr <<"Logger doesn't work!" << std::endl;
         }
