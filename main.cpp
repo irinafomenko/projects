@@ -1,6 +1,4 @@
-#include <iostream>
 #include "Logger.h"
-#include "class_deque.h"
 #include "server.h"
 #include "client.h"
 
@@ -16,8 +14,8 @@ int main(int argc, char *argv[])
 {
     if(argc>1)
     {
-        if(! strcmp(argv[1],CLIENT)) {main_client();}
-        else {main_server();}
+        if(! strcmp(argv[1],CLIENT)) {main_client(argv[2]);}
+        else {main_server(argv[2]);}
     }
 
     return 0;
