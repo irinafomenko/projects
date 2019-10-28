@@ -10,8 +10,7 @@
 #include "my_exceptions.h"
 #include "Logger.h"
 
-myexception ex2;
-Logger logg("log_example.txt", "Structure");
+//Logger logg("log_example.txt", "Structure");
 
 class Structure {
 protected:
@@ -19,7 +18,7 @@ protected:
     {
         int num;
         std::pair<std::string, int> commands;
-        //std::string command;
+        //std::sring command;
         List* next;
         List* prev;
         List(): next(NULL), prev(NULL){};
