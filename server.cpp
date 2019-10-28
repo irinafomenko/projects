@@ -2,14 +2,14 @@
 // Created by ifomenko on 23.10.2019.
 //
 
-#ifndef SPISOK_2_SERVER_H
-#define SPISOK_2_SERVER_H
 
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include "Logger.h"
+#include "class_deque.h"
 
 using namespace std;
 
@@ -17,7 +17,7 @@ using namespace std;
 Logger log_server("log_example.txt", "Server"); // класс Logger
 /*---------------------------------------------*/
 
-void main_server()
+void main_server(const char *ip_addr)
 {
     /*---------------------------------------------*/
     log_server.print("main_server()"); // класс Logger
@@ -36,8 +36,8 @@ void main_server()
     }
 
     addr.sin_family = AF_INET;//семейство адресов
-    addr.sin_port = htons(3425);//порт
-    addr.sin_addr.s_addr = inet_addr("127.0.0.1");// htonl(INADDR_ANY);//IP-адрес хоста
+    addr.sin_port = 3425; // htons(3425);//порт
+    addr.sin_addr.s_addr = inet_addr(ip_addr);// htonl(INADDR_ANY);//IP-адрес хоста
     if(bind(listener, (struct sockaddr *)&addr, sizeof(addr)) < 0)//связывание сокета с адресом
     {
         perror("bind");
@@ -100,4 +100,3 @@ void main_server()
     /*---------------------------------------------*/
 }
 
-#endif //SPISOK_2_SERVER_H
