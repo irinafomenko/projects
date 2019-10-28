@@ -3,19 +3,15 @@
 //
 #include <iostream>
 #include "Logger.h"
-#include "class_deque.h"
-#include "server.h"
+#include "class_myqueue.h"
 #include <functional>
-#include <thread>
-#include <mutex>
 #include <list>
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <arpa/inet.h>
 
-#ifndef SPISOK_2_CLIENT_H
-#define SPISOK_2_CLIENT_H
+using namespace std;
 
 /*---------------------------------------------*/
 myQueue* my_command = new myQueue;
@@ -24,7 +20,7 @@ myQueue* my_command = new myQueue;
 Logger log_client("log_example.txt", "Client"); // класс Logger
 /*---------------------------------------------*/
 
-void send_to_server()
+void send_to_server(const char *ip_addr)
 {
     /*---------------------------------------------*/
     log_client.print("send_to_server()"); // класс Logger
@@ -40,8 +36,8 @@ void send_to_server()
     }
 
     addr.sin_family = AF_INET;//семейство адресов
-    addr.sin_port = htons(3425); // или любой другой порт...
-    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);//IP-адресс хоста
+    addr.sin_port = 3425; // или любой другой порт...
+    addr.sin_addr.s_addr = inet_addr(ip_addr);//IP-адресс хоста
     if(connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)//для установления соединения
     {
         perror("connect");
@@ -68,7 +64,7 @@ void send_to_server()
     /*---------------------------------------------*/
 }
 
-void main_client()
+void main_client(const char *ip_addr)
 {
     /*---------------------------------------------*/
     log_client.print("main_client()"); // класс Logger
@@ -143,7 +139,7 @@ void main_client()
                 my_command->push( "print");
                 break;
             case 9:
-                send_to_server();
+                send_to_server(ip_addr);
                 break;
             case 10:
                 break;
@@ -163,4 +159,3 @@ void main_client()
     /*---------------------------------------------*/
 }
 
-#endif //SPISOK_2_CLIENT_H
