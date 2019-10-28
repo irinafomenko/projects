@@ -6,6 +6,7 @@
 #define SPISOK_2_MY_EXCEPTIONS_H
 
 #include <exception>
+#include "Logger.h"
 
 extern Logger logg_deque;
 
