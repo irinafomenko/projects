@@ -48,8 +48,18 @@ void main_server(const char *ip_addr)
 
     while(1)
     {
-
-        sock = accept(listener, NULL, NULL);//создает для общения с клиентом новый сокет
+        /*--------------------------------------*/
+        //вывод сообщения о подключении клиента и отправка ответного сообщения
+        if((sock = accept(listener, NULL, NULL)) >= 0);//создает для общения с клиентом новый сокет
+        {
+            cout << "New client connected!" << endl;
+            int size_msg = 18;
+            char msg[size_msg];
+            strcpy(msg,"Hello from server!");
+            send(sock, &size_msg, sizeof(int), 0);
+            send(sock, &msg, size_msg, 0);
+        }
+        /*--------------------------------------*/
         bytes_size_queue = recv(sock, &size_queue, sizeof(int), 0);
         if(bytes_size_queue <= 0) {break;}
 
@@ -75,10 +85,38 @@ void main_server(const char *ip_addr)
                 if (k.first == "push_front") { myDequ->push_front(k.second); }
                 if (k.first == "pop") { myDequ->pop(); }
                 if (k.first == "pop_back") { myDequ->pop_back(); }
-                if (k.first == "begin_element") { cout << myDequ->begin_element() << endl; }
-                if (k.first == "end_element") { cout << myDequ->end_element() << endl; }
-                if (k.first == "size_of_queue") { cout << myDequ->size_of_queue() << endl; }
-                if (k.first == "print") { myDequ->print();}
+                if (k.first == "begin_element")
+                {
+                    //cout << myDequ->begin_element() << endl;
+                    int begin_el = myDequ->begin_element();
+                    send(sock, &begin_el, sizeof(int), 0);
+                }
+                if (k.first == "end_element")
+                {
+                    //cout << myDequ->end_element() << endl;
+                    int end_el = myDequ->end_element();
+                    send(sock, &end_el, sizeof(int), 0);
+                }
+                if (k.first == "size_of_queue")
+                {
+                    //cout << myDequ->size_of_queue() << endl;
+                    int size_of_queue = myDequ->size_of_queue();
+                    send(sock, &size_of_queue, sizeof(int), 0);
+                }
+                if (k.first == "print")
+                {
+                    //myDequ->print();
+                    int size = myDequ->size_of_queue();
+                    send(sock, &size, sizeof(int), 0);
+                    myDeque* send_deque = new myDeque;
+                    myDequ->copy_to(send_deque);
+                    while(send_deque->size_of_queue() != 0)
+                    {
+                        int el = send_deque->begin_element();
+                        send(sock, &el, sizeof(int), 0);
+                        send_deque->pop();
+                    }
+                }
             }
             catch (std::exception& e)
             {
