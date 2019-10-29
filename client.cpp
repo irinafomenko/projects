@@ -4,12 +4,14 @@
 #include <iostream>
 #include "Logger.h"
 #include "class_myqueue.h"
+#include "class_deque.h"
 #include <functional>
 #include <list>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include<windows.h>
 
 using namespace std;
 
@@ -25,6 +27,8 @@ void send_to_server(const char *ip_addr)
     /*---------------------------------------------*/
     log_client.print("send_to_server()"); // класс Logger
     /*---------------------------------------------*/
+    int deque_print = 0;
+    int deque_element = 0;
     int size_queue;
     int sock;//для клиента
     struct sockaddr_in addr;//адрес
@@ -38,11 +42,27 @@ void send_to_server(const char *ip_addr)
     addr.sin_family = AF_INET;//семейство адресов
     addr.sin_port = 3425; // или любой другой порт...
     addr.sin_addr.s_addr = inet_addr(ip_addr);//IP-адресс хоста
+    /*
     if(connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)//для установления соединения
     {
         perror("connect");
         exit(2);
     }
+     */
+    while(connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+    {
+        cout << "Can't connect!" << endl;
+        cout << "Try again..." << endl;
+        Sleep(5000);
+    }
+    /*--------------------------------------*/
+    //получение сообщения от сервера
+    int size_msg;
+    recv(sock, &size_msg, sizeof(int), 0);
+    char msg[size_msg];
+    recv(sock, &msg, size_msg, 0);
+    cout << msg << endl;
+    /*--------------------------------------*/
     size_queue = my_command->size_of_queue();
     //send(sock, &change, sizeof(change), 0);
     send(sock, &size_queue, sizeof(size_queue), 0);
@@ -56,7 +76,35 @@ void send_to_server(const char *ip_addr)
         send(sock, &size_cmd, sizeof(int), 0);
         send(sock, &el_first, size_cmd, 0);
         send(sock, &el_second, sizeof(el_second), 0);
+        if(el.first == "begin_element" || el.first == "end_element" || el.first == "size_of_queue")
+        {
+            deque_element++;
+        }
+        if(el.first == "print")
+        {
+            deque_print++;
+        }
         my_command->pop();
+    }
+    while(deque_element != 0)
+    {
+        int el;
+        recv(sock, &el, sizeof(int), 0);
+        cout << el << endl;
+        deque_element--;
+    }
+    while(deque_print != 0)
+    {
+        int size;
+        recv(sock, &size, sizeof(int), 0);
+        for(int i=0; i<size; i++)
+        {
+            int el;
+            recv(sock, &el, sizeof(int), 0);
+            cout << el << " ";
+        }
+        cout << endl;
+        deque_print--;
     }
     close(sock);//закрытие сокета
     /*---------------------------------------------*/
