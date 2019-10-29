@@ -28,6 +28,7 @@ public:
     void pop();
     int size_of_queue();
     void print();
+    void copy_to(myDeque *deq);
 };
 
 #endif //SPISOK_2_CLASS_DEQUE_H

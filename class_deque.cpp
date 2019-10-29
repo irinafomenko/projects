@@ -120,3 +120,18 @@ void myDeque::print()
     std::cout << std::endl;
     logg_deque.print("Print queue" + queue);
 }
+
+void myDeque::copy_to(myDeque *deq)
+{
+    logg_deque.print("copy_to() function");
+    List* temp = begin;
+    std::string queue;
+    while (temp != NULL)
+    {
+        int el = temp->num;
+        deq->push(el);
+        queue += " " + std::to_string(el);
+        temp = temp->next;
+    }
+    logg_deque.print("Copy " + queue);
+}
