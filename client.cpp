@@ -4,14 +4,13 @@
 #include <iostream>
 #include "Logger.h"
 #include "class_myqueue.h"
-#include "class_deque.h"
 #include <functional>
 #include <list>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include<windows.h>
+#include <windows.h>
 
 using namespace std;
 
@@ -51,10 +50,20 @@ void send_to_server(const char *ip_addr)
      */
     while(connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
     {
+        log_client.print("Can't connect!"); // класс Logger
         cout << "Can't connect!" << endl;
         cout << "Try again..." << endl;
         Sleep(5000);
     }
+    log_client.print("Connected!"); // класс Logger
+    /*--------------------------------------*/
+    //отправка ip адресса клиента
+    int size_ip_addr = sizeof(ip_addr)+1;
+    char ip_addr_client[size_ip_addr];
+    strcpy(ip_addr_client,ip_addr);
+    cout << size_ip_addr << endl;
+    send(sock, &size_ip_addr, sizeof(int), 0);
+    send(sock, &ip_addr_client, size_ip_addr, 0);
     /*--------------------------------------*/
     //получение сообщения от сервера
     int size_msg;
@@ -64,11 +73,18 @@ void send_to_server(const char *ip_addr)
     cout << msg << endl;
     /*--------------------------------------*/
     size_queue = my_command->size_of_queue();
-    //send(sock, &change, sizeof(change), 0);
     send(sock, &size_queue, sizeof(size_queue), 0);
     while(my_command->size_of_queue() != 0)
     {
-        pair<string,int> el = my_command->head();
+        pair<string,int> el;
+        try
+        {
+            el = my_command->head();
+        }
+        catch (std::exception& e)
+        {
+            std::cout << e.what() << std::endl;
+        }
         int size_cmd = el.first.length();
         char el_first[size_cmd];
         strcpy(el_first,el.first.c_str());
@@ -80,17 +96,41 @@ void send_to_server(const char *ip_addr)
         else if(el.first == "end_element") {deq_element->push("end_element");}
         else if(el.first == "size_of_queue") {deq_element->push("size_of_queue");}
         if(el.first == "print") {deque_print++;}
-        my_command->pop();
+        try
+        {
+            my_command->pop();
+        }
+        catch (std::exception& e)
+        {
+            std::cout << e.what() << std::endl;
+        }
     }
     while(deq_element->size_of_queue() != 0)
     {
-        int el;
-        string cmd = deq_element->head().first;
-        recv(sock, &el, sizeof(int), 0);
-        if(cmd == "begin_element") {cout << "Begin element is " << el << endl;}
-        if(cmd == "end_element") {cout << "End element is " << el << endl;}
-        if(cmd == "size_of_queue") {cout << "Size of deque:  " << el << endl;}
-        deq_element->pop();
+
+            int el;
+            string cmd;
+            try
+            {
+                cmd = deq_element->head().first;
+            }
+            catch (std::exception& e)
+            {
+                std::cout << e.what() << std::endl;
+            }
+            recv(sock, &el, sizeof(int), 0);
+            if(cmd == "begin_element") {cout << "Begin element is " << el << endl;}
+            if(cmd == "end_element") {cout << "End element is " << el << endl;}
+            if(cmd == "size_of_queue") {cout << "Size of deque:  " << el << endl;}
+        try
+        {
+            deq_element->pop();
+        }
+        catch (std::exception& e)
+        {
+            std::cout << e.what() << std::endl;
+        }
+
     }
     while(deque_print != 0)
     {
@@ -108,7 +148,7 @@ void send_to_server(const char *ip_addr)
     }
     close(sock);//закрытие сокета
     /*---------------------------------------------*/
-    log_client.print("send_to_server() exit"); // класс Logger
+    log_client.print("Connection closed"); // класс Logger
     /*---------------------------------------------*/
 }
 
@@ -136,8 +176,6 @@ void main_client(const char *ip_addr)
         cin >> change;
         //mut.unlock();
 
-        //try
-        //{
         switch (change) {
             case 1:
                 cout << "Enter element: ";
