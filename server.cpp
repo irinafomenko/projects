@@ -1,8 +1,6 @@
 //
 // Created by ifomenko on 23.10.2019.
 //
-
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -52,7 +50,17 @@ void main_server(const char *ip_addr)
         //вывод сообщения о подключении клиента и отправка ответного сообщения
         if((sock = accept(listener, NULL, NULL)) >= 0);//создает для общения с клиентом новый сокет
         {
-            cout << "New client connected!" << endl;
+            //получение ip адреса клиента
+            int size_ip_addr_client;
+            recv(sock, &size_ip_addr_client, sizeof(int), 0);
+            char ip_addr_client[size_ip_addr_client];
+            recv(sock, &ip_addr_client, size_ip_addr_client, 0);
+            string msg_for_logger = "New client connected! ";
+            /*--------------------------------------*/
+            log_server.print(msg_for_logger + ip_addr_client); // класс Logger
+            /*--------------------------------------*/
+            cout << "New client connected! " << ip_addr_client << endl;
+            //отправка сообщения клиенту
             int size_msg = 18;
             char msg[size_msg];
             strcpy(msg,"Hello from server!");
@@ -73,7 +81,6 @@ void main_server(const char *ip_addr)
             recv(sock, &el_second, sizeof(int), 0);
             my_command->push(el_first, el_second);
         }
-
 
         while(my_command->size_of_queue() != 0)
         {
@@ -132,6 +139,9 @@ void main_server(const char *ip_addr)
             }
         }
         close(sock);//закрытие сокета
+        /*---------------------------------------------*/
+        log_server.print("Connection closed"); // класс Logger
+        /*---------------------------------------------*/
     }
     /*---------------------------------------------*/
     log_server.print("main_server() exit"); // класс Logger
