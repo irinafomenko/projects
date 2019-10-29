@@ -28,8 +28,8 @@ void send_to_server(const char *ip_addr)
     log_client.print("send_to_server()"); // класс Logger
     /*---------------------------------------------*/
     int deque_print = 0;
-    int deque_element = 0;
     int size_queue;
+    myQueue* deq_element = new myQueue;
     int sock;//для клиента
     struct sockaddr_in addr;//адрес
     sock = socket(AF_INET, SOCK_STREAM, 0);//создание сокета
@@ -76,25 +76,25 @@ void send_to_server(const char *ip_addr)
         send(sock, &size_cmd, sizeof(int), 0);
         send(sock, &el_first, size_cmd, 0);
         send(sock, &el_second, sizeof(el_second), 0);
-        if(el.first == "begin_element" || el.first == "end_element" || el.first == "size_of_queue")
-        {
-            deque_element++;
-        }
-        if(el.first == "print")
-        {
-            deque_print++;
-        }
+        if(el.first == "begin_element") {deq_element->push("begin_element");}
+        else if(el.first == "end_element") {deq_element->push("end_element");}
+        else if(el.first == "size_of_queue") {deq_element->push("size_of_queue");}
+        if(el.first == "print") {deque_print++;}
         my_command->pop();
     }
-    while(deque_element != 0)
+    while(deq_element->size_of_queue() != 0)
     {
         int el;
+        string cmd = deq_element->head().first;
         recv(sock, &el, sizeof(int), 0);
-        cout << el << endl;
-        deque_element--;
+        if(cmd == "begin_element") {cout << "Begin element is " << el << endl;}
+        if(cmd == "end_element") {cout << "End element is " << el << endl;}
+        if(cmd == "size_of_queue") {cout << "Size of deque:  " << el << endl;}
+        deq_element->pop();
     }
     while(deque_print != 0)
     {
+        cout << "Deque: ";
         int size;
         recv(sock, &size, sizeof(int), 0);
         for(int i=0; i<size; i++)
@@ -118,25 +118,6 @@ void main_client(const char *ip_addr)
     log_client.print("main_client()"); // класс Logger
     /*---------------------------------------------*/
     int change = 1;
-    /*
-    sock = socket(AF_INET, SOCK_STREAM, 0);//создание сокета
-    if(sock < 0)
-    {
-        perror("socket");
-        exit(1);
-    }
-
-    addr.sin_family = AF_INET;//семейство адресов
-    addr.sin_port = htons(3425); // или любой другой порт...
-    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);//IP-адресс хоста
-    if(connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)//для установления соединения
-    {
-        perror("connect");
-        exit(2);
-    }
-    */
-
-
     int el;
     while((change >= 1) && (change < 10))
     {
@@ -194,14 +175,8 @@ void main_client(const char *ip_addr)
             default:
                 break;
         }
-        //}
-        //catch (std::exception& e)
-        //{
-        //    std::cout << e.what() << std::endl;
-        //}
 
     }
-    //close(sock);//закрытие сокета
     /*---------------------------------------------*/
     log_client.print("main_client() exit"); // класс Logger
     /*---------------------------------------------*/
