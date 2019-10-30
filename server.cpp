@@ -112,7 +112,7 @@ void main_server(const char *ip_addr)
                 }
                 if (k.first == "print")
                 {
-                    //myDequ->print();
+                    myDequ->print();
                     int size = myDequ->size_of_queue();
                     send(sock, &size, sizeof(int), 0);
                     myDeque* send_deque = new myDeque;
