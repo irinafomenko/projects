@@ -11,11 +11,13 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <windows.h>
+#include <thread>
 
 using namespace std;
 
 /*---------------------------------------------*/
 myQueue* my_command = new myQueue;
+bool flag_exit = FALSE;
 /*---------------------------------------------*/
 /*---------------------------------------------*/
 Logger log_client("log_example.txt", "Client"); // класс Logger
@@ -61,7 +63,6 @@ void send_to_server(const char *ip_addr)
     int size_ip_addr = sizeof(ip_addr)+1;
     char ip_addr_client[size_ip_addr];
     strcpy(ip_addr_client,ip_addr);
-    cout << size_ip_addr << endl;
     send(sock, &size_ip_addr, sizeof(int), 0);
     send(sock, &ip_addr_client, size_ip_addr, 0);
     /*--------------------------------------*/
@@ -152,14 +153,27 @@ void send_to_server(const char *ip_addr)
     /*---------------------------------------------*/
 }
 
+void thread_for_send_to_server(const char *ip_addr)
+{
+    while(1)
+    {
+        Sleep(5000);
+        send_to_server(ip_addr);
+        if(flag_exit == TRUE) {break;}
+    }
+}
+
 void main_client(const char *ip_addr)
 {
     /*---------------------------------------------*/
     log_client.print("main_client()"); // класс Logger
     /*---------------------------------------------*/
+    /*---------------------------------------------*/
+    thread thread_for_server(thread_for_send_to_server, ip_addr);
+    /*---------------------------------------------*/
     int change = 1;
     int el;
-    while((change >= 1) && (change < 10))
+    while((change >= 1) && (change < 9))
     {
         //mut.lock();//чтобы второй поток ничего не выводил пока не выбрана команда
         cout << "1 - Add element to back" << endl;
@@ -170,8 +184,7 @@ void main_client(const char *ip_addr)
         cout << "6 - Print last element" << endl;
         cout << "7 - Print size" << endl;
         cout << "8 - Print deque" << endl;
-        cout << "9 - Send to server" << endl;
-        cout << "10 - Quit" << endl;
+        cout << "9 - Quit" << endl;
         //mut.lock();
         cin >> change;
         //mut.unlock();
@@ -205,16 +218,13 @@ void main_client(const char *ip_addr)
             case 8:
                 my_command->push( "print");
                 break;
-            case 9:
-                send_to_server(ip_addr);
-                break;
-            case 10:
-                break;
             default:
+                flag_exit = TRUE;
                 break;
         }
 
     }
+    thread_for_server.join();
     /*---------------------------------------------*/
     log_client.print("main_client() exit"); // класс Logger
     /*---------------------------------------------*/
