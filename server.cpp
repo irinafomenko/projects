@@ -22,6 +22,8 @@ void main_server(const char *ip_addr)
     /*---------------------------------------------*/
     int size_queue;
     int bytes_size_queue;
+    char have_elements[4] = "yes";
+    int size_have_elements = sizeof(have_elements);
     myDeque* myDequ = new myDeque;
     myQueue* my_command = new myQueue;
     int sock, listener;//для сервера
@@ -90,29 +92,47 @@ void main_server(const char *ip_addr)
                 cout << k.first << endl;// чтобы знать какая команда выполняется
                 if (k.first == "push") { myDequ->push(k.second); }
                 if (k.first == "push_front") { myDequ->push_front(k.second); }
-                if (k.first == "pop") { myDequ->pop(); }
-                if (k.first == "pop_back") { myDequ->pop_back(); }
+                if (k.first == "pop")
+                {
+                    myDequ->pop();
+                    send(sock, &size_have_elements, sizeof(int), 0);
+                    send(sock, &have_elements, size_have_elements, 0);
+                }
+                if (k.first == "pop_back")
+                {
+                    myDequ->pop_back();
+                    send(sock, &size_have_elements, sizeof(int), 0);
+                    send(sock, &have_elements, size_have_elements, 0);
+                }
                 if (k.first == "begin_element")
                 {
                     //cout << myDequ->begin_element() << endl;
                     int begin_el = myDequ->begin_element();
+                    send(sock, &size_have_elements, sizeof(int), 0);
+                    send(sock, &have_elements, size_have_elements, 0);
                     send(sock, &begin_el, sizeof(int), 0);
                 }
                 if (k.first == "end_element")
                 {
                     //cout << myDequ->end_element() << endl;
                     int end_el = myDequ->end_element();
+                    send(sock, &size_have_elements, sizeof(int), 0);
+                    send(sock, &have_elements, size_have_elements, 0);
                     send(sock, &end_el, sizeof(int), 0);
                 }
                 if (k.first == "size_of_queue")
                 {
                     //cout << myDequ->size_of_queue() << endl;
                     int size_of_queue = myDequ->size_of_queue();
+                    send(sock, &size_have_elements, sizeof(int), 0);
+                    send(sock, &have_elements, size_have_elements, 0);
                     send(sock, &size_of_queue, sizeof(int), 0);
                 }
                 if (k.first == "print")
                 {
                     myDequ->print();
+                    send(sock, &size_have_elements, sizeof(int), 0);
+                    send(sock, &have_elements, size_have_elements, 0);
                     int size = myDequ->size_of_queue();
                     send(sock, &size, sizeof(int), 0);
                     myDeque* send_deque = new myDeque;
@@ -128,6 +148,12 @@ void main_server(const char *ip_addr)
             catch (std::exception& e)
             {
                 std::cout << e.what() << std::endl;
+                string msg_str = e.what();
+                int size_msg = msg_str.length();
+                char msg[msg_str.length()];
+                strcpy(msg,msg_str.c_str());
+                send(sock, &size_msg, sizeof(int), 0);
+                send(sock, &msg, size_msg, 0);
             }
             try
             {
