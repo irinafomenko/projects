@@ -29,7 +29,10 @@ void send_to_server(const char *ip_addr)
     log_client.print("send_to_server()"); // класс Logger
     /*---------------------------------------------*/
     int deque_print = 0;
+    int deque_pop = 0;
     int size_queue;
+    int size_msg_exception;//для проверки вывода исключения
+    char msg_exception[size_msg_exception];//для проверки вывода исключения
     myQueue* deq_element = new myQueue;
     int sock;//для клиента
     struct sockaddr_in addr;//адрес
@@ -93,6 +96,8 @@ void send_to_server(const char *ip_addr)
         send(sock, &size_cmd, sizeof(int), 0);
         send(sock, &el_first, size_cmd, 0);
         send(sock, &el_second, sizeof(el_second), 0);
+        if(el.first == "pop") {deque_pop++;}
+        else if(el.first == "pop_back") {deque_pop++;}
         if(el.first == "begin_element") {deq_element->push("begin_element");}
         else if(el.first == "end_element") {deq_element->push("end_element");}
         else if(el.first == "size_of_queue") {deq_element->push("size_of_queue");}
@@ -106,23 +111,42 @@ void send_to_server(const char *ip_addr)
             std::cout << e.what() << std::endl;
         }
     }
+    while(deque_pop != 0)
+    {
+        recv(sock, &size_msg_exception, sizeof(int), 0);
+        recv(sock, &msg_exception, size_msg_exception, 0);
+        if( strcmp(msg_exception, "yes"))
+        {
+            cout << msg_exception << endl;
+        }
+        deque_pop--;
+    }
     while(deq_element->size_of_queue() != 0)
     {
 
-            int el;
-            string cmd;
-            try
-            {
-                cmd = deq_element->head().first;
-            }
-            catch (std::exception& e)
-            {
-                std::cout << e.what() << std::endl;
-            }
+        int el;
+        string cmd;
+        try
+        {
+            cmd = deq_element->head().first;
+        }
+        catch (std::exception& e)
+        {
+            std::cout << e.what() << std::endl;
+        }
+        recv(sock, &size_msg_exception, sizeof(int), 0);
+        recv(sock, &msg_exception, size_msg_exception, 0);
+        if( !strcmp(msg_exception, "yes"))
+        {
             recv(sock, &el, sizeof(int), 0);
             if(cmd == "begin_element") {cout << "Begin element is " << el << endl;}
             if(cmd == "end_element") {cout << "End element is " << el << endl;}
             if(cmd == "size_of_queue") {cout << "Size of deque:  " << el << endl;}
+        }
+        else
+        {
+            cout << msg_exception << endl;
+        }
         try
         {
             deq_element->pop();
@@ -135,16 +159,25 @@ void send_to_server(const char *ip_addr)
     }
     while(deque_print != 0)
     {
-        cout << "Deque: ";
-        int size;
-        recv(sock, &size, sizeof(int), 0);
-        for(int i=0; i<size; i++)
+        recv(sock, &size_msg_exception, sizeof(int), 0);
+        recv(sock, &msg_exception, size_msg_exception, 0);
+        if( !strcmp(msg_exception, "yes"))
         {
-            int el;
-            recv(sock, &el, sizeof(int), 0);
-            cout << el << " ";
+            cout << "Deque: ";
+            int size;
+            recv(sock, &size, sizeof(int), 0);
+            for(int i=0; i<size; i++)
+            {
+                int el;
+                recv(sock, &el, sizeof(int), 0);
+                cout << el << " ";
+            }
+            cout << endl;
         }
-        cout << endl;
+        else
+        {
+            cout << msg_exception << endl;
+        }
         deque_print--;
     }
     close(sock);//закрытие сокета
