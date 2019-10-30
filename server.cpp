@@ -147,7 +147,7 @@ void main_server(const char *ip_addr)
             }
             catch (std::exception& e)
             {
-                std::cout << e.what() << std::endl;
+                //std::cout << e.what() << std::endl;
                 string msg_str = e.what();
                 int size_msg = msg_str.length();
                 char msg[msg_str.length()];
