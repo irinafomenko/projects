@@ -53,10 +53,10 @@ void myDeque::pop_back()
     List* el = end;
     end = end->prev;
     delete el;
-    if(size != 1)
-    {
+    //if(size != 1)
+    //{
         end->next = NULL;
-    }
+    //}
     size--;
     logg_deque.print("Deleted last element");
 }
@@ -66,7 +66,7 @@ int myDeque::begin_element()
     logg_deque.print("begin_element() function of deque");
     if(begin != NULL)
     {
-        logg_deque.print("Return begin element");
+        logg_deque.print("Return begin element " + std::to_string(begin->num));
         return begin->num;
     }
     throw ex2;
@@ -78,7 +78,7 @@ int myDeque::end_element()
     logg_deque.print("end_element() function of deque");
     if(end != NULL)
     {
-        logg_deque.print("Return end element");
+        logg_deque.print("Return end element " + std::to_string(end->num));
         return end->num;
     }
     throw ex2;
@@ -100,7 +100,7 @@ void myDeque::pop()
 int myDeque::size_of_queue()
 {
     logg_deque.print("size_of_queue() function");
-    logg_deque.print("Return size of queue");
+    logg_deque.print("Return size of deque " + std::to_string(size));
     return size;
 }
 
@@ -109,29 +109,29 @@ void myDeque::print()
     logg_deque.print("print() function");
     if(begin == NULL) {throw ex2;}
     List* temp = begin;
-    std::string queue;
+    std::string deque;
     while (temp != NULL)
     {
         int el = temp->num;
         std::cout << el << " ";
-        queue += " " + std::to_string(el);
+        deque += " " + std::to_string(el);
         temp = temp->next;
     }
     std::cout << std::endl;
-    logg_deque.print("Print queue" + queue);
+    logg_deque.print("Print deque" + deque);
 }
 
 void myDeque::copy_to(myDeque *deq)
 {
     logg_deque.print("copy_to() function");
     List* temp = begin;
-    std::string queue;
+    std::string deque;
     while (temp != NULL)
     {
         int el = temp->num;
         deq->push(el);
-        queue += " " + std::to_string(el);
+        deque += " " + std::to_string(el);
         temp = temp->next;
     }
-    logg_deque.print("Copy " + queue);
+    logg_deque.print("Copy " + deque);
 }
