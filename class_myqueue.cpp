@@ -6,43 +6,23 @@
 myexception ex2;
 Logger logg_queue("log_example.txt", "Queue");
 
-    /*
-    void push(int n)
-    {
-        logg.print("push() function");
-        if(end != NULL)
-        {
-            List* temp = new List(n, NULL);
-            end->next = temp;
-            end = end->next;
-            logg.print("Add element");
-        }
-        else
-        {
-            end = new List(n, NULL);
-            begin = end;
-            logg.print("Add element");
-        }
-        size++;
-    }*/
-
-void myQueue::push(std::string com, int n)
+void myQueue::push(std::pair<std::string,int> com)//std::string com, int n)
 {
     logg_queue.print("push function of queue");
     if(end != NULL)
     {
-        List* temp = new List(n, NULL, com);
+        List* temp = new List(com.second, NULL, com.first);
         end->next = temp;
         end = end->next;
-        if(n != 0) {logg_queue.print("Add element " + std::to_string(n));}
-        else {logg_queue.print("Add command " + com);}
+        if(com.second != 0) {logg_queue.print("Add element " + std::to_string(com.second));}
+        else {logg_queue.print("Add command " + com.first);}
     }
     else
     {
-        end = new List(n, NULL, com);
+        end = new List(com.second, NULL, com.first);
         begin = end;
-        if(n != 0) {logg_queue.print("Add element " + std::to_string(n));}
-        else {logg_queue.print("Add command " + com);}
+        if(com.second != 0) {logg_queue.print("Add element " + std::to_string(com.second));}
+        else {logg_queue.print("Add command " + com.first);}
     }
     size++;
 }
@@ -74,7 +54,7 @@ void myQueue::pop()
 int myQueue::size_of_queue()
 {
     logg_queue.print("size_of_queue() function");
-    logg_queue.print("Return size of queue");
+    logg_queue.print("Return size of queue " + std::to_string(size));
     return size;
 }
 

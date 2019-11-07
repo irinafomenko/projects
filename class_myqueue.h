@@ -20,7 +20,7 @@ public:
         }
     }
     /*---------------------------------------------*/
-    void push(std::string com, int n = 0);
+    void push(std::pair<std::string, int> com);//std::string com, int n = 0);
     std::pair<std::string, int> head();
     /*---------------------------------------------*/
     void pop();
