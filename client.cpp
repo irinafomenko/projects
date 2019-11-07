@@ -1,10 +1,7 @@
 //
 // Created by ifomenko on 24.10.2019.
 //
-#include <iostream>
-#include "Logger.h"
-#include "class_myqueue.h"
-#include <functional>
+#include "class_myqueue.h" //для очереди команд
 #include <list>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -28,12 +25,10 @@ void send_to_server(const char *ip_addr)
     /*---------------------------------------------*/
     log_client.print("send_to_server()"); // класс Logger
     /*---------------------------------------------*/
-    int deque_print = 0;
-    int deque_pop = 0;
     int size_queue;
     int size_msg_exception;//для проверки вывода исключения
     char msg_exception[size_msg_exception];//для проверки вывода исключения
-    myQueue* deq_element = new myQueue;
+    myQueue* deq_element = new myQueue; //для вывода элементов (дэка, первого, последнего, размера)
     int sock;//для клиента
     struct sockaddr_in addr;//адрес
     sock = socket(AF_INET, SOCK_STREAM, 0);//создание сокета
@@ -84,26 +79,20 @@ void send_to_server(const char *ip_addr)
         try
         {
             el = my_command->head();
-        }
-        catch (std::exception& e)
-        {
-            std::cout << e.what() << std::endl;
-        }
-        int size_cmd = el.first.length();
-        char el_first[size_cmd];
-        strcpy(el_first,el.first.c_str());
-        int el_second = el.second;
-        send(sock, &size_cmd, sizeof(int), 0);
-        send(sock, &el_first, size_cmd, 0);
-        send(sock, &el_second, sizeof(el_second), 0);
-        if(el.first == "pop") {deque_pop++;}
-        else if(el.first == "pop_back") {deque_pop++;}
-        if(el.first == "begin_element") {deq_element->push("begin_element");}
-        else if(el.first == "end_element") {deq_element->push("end_element");}
-        else if(el.first == "size_of_queue") {deq_element->push("size_of_queue");}
-        if(el.first == "print") {deque_print++;}
-        try
-        {
+            int size_cmd = el.first.length();
+            char el_first[size_cmd];
+            strcpy(el_first,el.first.c_str());
+            int el_second = el.second;
+            send(sock, &size_cmd, sizeof(int), 0);
+            send(sock, &el_first, size_cmd, 0);
+            send(sock, &el_second, sizeof(el_second), 0);
+            //для выводов элементов и сообщений исключений
+            if(el.first == "pop") {deq_element->push(el);}
+            else if(el.first == "pop_back") {deq_element->push(el);}
+            else if(el.first == "begin_element") {deq_element->push(el);}
+            else if(el.first == "end_element") {deq_element->push(el);}
+            else if(el.first == "size_of_queue") {deq_element->push(el);}
+            else if(el.first == "print") {deq_element->push(el);}
             my_command->pop();
         }
         catch (std::exception& e)
@@ -111,16 +100,8 @@ void send_to_server(const char *ip_addr)
             std::cout << e.what() << std::endl;
         }
     }
-    while(deque_pop != 0)
-    {
-        recv(sock, &size_msg_exception, sizeof(int), 0);
-        recv(sock, &msg_exception, size_msg_exception, 0);
-        if( strcmp(msg_exception, "yes"))
-        {
-            cout << msg_exception << endl;
-        }
-        deque_pop--;
-    }
+
+    //выполнение запросов
     while(deq_element->size_of_queue() != 0)
     {
 
@@ -138,10 +119,34 @@ void send_to_server(const char *ip_addr)
         recv(sock, &msg_exception, size_msg_exception, 0);
         if( !strcmp(msg_exception, "yes"))
         {
-            recv(sock, &el, sizeof(int), 0);
-            if(cmd == "begin_element") {cout << "Begin element is " << el << endl;}
-            if(cmd == "end_element") {cout << "End element is " << el << endl;}
-            if(cmd == "size_of_queue") {cout << "Size of deque:  " << el << endl;}
+            if(cmd == "begin_element")
+            {
+                recv(sock, &el, sizeof(int), 0);
+                cout << "Begin element is " << el << endl;
+            }
+            if(cmd == "end_element")
+            {
+                recv(sock, &el, sizeof(int), 0);
+                cout << "End element is " << el << endl;
+            }
+            if(cmd == "size_of_queue")
+            {
+                recv(sock, &el, sizeof(int), 0);
+                cout << "Size of deque:  " << el << endl;
+            }
+            if(cmd == "print")
+            {
+                cout << "Deque: ";
+                int size;
+                recv(sock, &size, sizeof(int), 0);
+                for(int i=0; i<size; i++)
+                {
+                    int el;
+                    recv(sock, &el, sizeof(int), 0);
+                    cout << el << " ";
+                }
+                cout << endl;
+            }
         }
         else
         {
@@ -157,29 +162,7 @@ void send_to_server(const char *ip_addr)
         }
 
     }
-    while(deque_print != 0)
-    {
-        recv(sock, &size_msg_exception, sizeof(int), 0);
-        recv(sock, &msg_exception, size_msg_exception, 0);
-        if( !strcmp(msg_exception, "yes"))
-        {
-            cout << "Deque: ";
-            int size;
-            recv(sock, &size, sizeof(int), 0);
-            for(int i=0; i<size; i++)
-            {
-                int el;
-                recv(sock, &el, sizeof(int), 0);
-                cout << el << " ";
-            }
-            cout << endl;
-        }
-        else
-        {
-            cout << msg_exception << endl;
-        }
-        deque_print--;
-    }
+
     close(sock);//закрытие сокета
     /*---------------------------------------------*/
     log_client.print("Connection closed"); // класс Logger
@@ -205,7 +188,8 @@ void main_client(const char *ip_addr)
     thread thread_for_server(thread_for_send_to_server, ip_addr);
     /*---------------------------------------------*/
     int change = 1;
-    int el;
+    int el;//добавление элемента в дек
+    pair<string, int> change_command ("command",0);
     while((change >= 1) && (change < 9))
     {
         //mut.lock();//чтобы второй поток ничего не выводил пока не выбрана команда
@@ -225,31 +209,41 @@ void main_client(const char *ip_addr)
         switch (change) {
             case 1:
                 cout << "Enter element: ";
-                cin >> el;
-                my_command->push("push", el);
+                //cin >> el;
+                cin >> change_command.second;
+                change_command.first = "push";
+                my_command->push(change_command);
                 break;
             case 2:
                 cout << "Enter element: ";
-                cin >> el;
-                my_command->push("push_front", el);
+                //cin >> el;
+                cin >> change_command.second;
+                change_command.first = "push_front";
+                my_command->push(change_command);
                 break;
             case 3:
-                my_command->push( "pop");
+                change_command.first = "pop";
+                my_command->push(change_command);
                 break;
             case 4:
-                my_command->push( "pop_back");
+                change_command.first = "pop_back";
+                my_command->push(change_command);
                 break;
             case 5:
-                my_command->push( "begin_element");
+                change_command.first = "begin_element";
+                my_command->push(change_command);
                 break;
             case 6:
-                my_command->push( "end_element");
+                change_command.first = "end_element";
+                my_command->push(change_command);
                 break;
             case 7:
-                my_command->push( "size_of_queue");
+                change_command.first = "size_of_queue";
+                my_command->push(change_command);
                 break;
             case 8:
-                my_command->push( "print");
+                change_command.first = "print";
+                my_command->push(change_command);
                 break;
             default:
                 flag_exit = TRUE;
