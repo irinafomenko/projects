@@ -1,1 +1,0 @@
-/usr/bin/c++.exe  -static-libstdc++ -static-libgcc -g  -Wl,--enable-auto-import CMakeFiles/spisok_2.dir/main.cpp.o CMakeFiles/spisok_2.dir/class_myqueue.cpp.o CMakeFiles/spisok_2.dir/class_deque.cpp.o  -o spisok_2.exe -Wl,--out-implib,libspisok_2.dll.a -Wl,--major-image-version,0,--minor-image-version,0 
