@@ -4,7 +4,7 @@
 #include "class_deque.h"
 #include "class_myqueue.h"
 
-extern myexception ex2;
+myexception ex_deque;
 Logger logg_deque("log_example.txt", "Deque");
 
 void myDeque::push(int n)
@@ -50,7 +50,7 @@ void myDeque::push_front(int n)
 void myDeque::pop_back()
 {
     logg_deque.print("pop_back() function of deque");
-    if(end == NULL) {throw ex2;}
+    if(end == NULL) {throw ex_deque;}
     if (begin == end) {begin = NULL;}
     List* el = end;
     end = end->prev;
@@ -71,7 +71,7 @@ int myDeque::begin_element()
         logg_deque.print("Return begin element " + std::to_string(begin->num));
         return begin->num;
     }
-    throw ex2;
+    throw ex_deque;
     //return 0;
 }
 
@@ -83,14 +83,14 @@ int myDeque::end_element()
         logg_deque.print("Return end element " + std::to_string(end->num));
         return end->num;
     }
-    throw ex2;
+    throw ex_deque;
     //return 0;
 }
 
 void myDeque::pop()
 {
     logg_deque.print("pop() function");
-    if(begin == NULL) {throw ex2;}
+    if(begin == NULL) {throw ex_deque;}
     if(begin == end) {end = NULL;}
     List* el = begin;
     begin = begin->next;
@@ -109,7 +109,7 @@ int myDeque::size_of_queue()
 void myDeque::print()
 {
     logg_deque.print("print() function");
-    if(begin == NULL) {throw ex2;}
+    if(begin == NULL) {throw ex_deque;}
     List* temp = begin;
     std::string deque;
     while (temp != NULL)

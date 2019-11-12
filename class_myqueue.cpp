@@ -3,7 +3,7 @@
 //
 #include "class_myqueue.h"
 
-myexception ex2;
+myexception ex_queue;
 Logger logg_queue("log_example.txt", "Queue");
 
 void myQueue::push(std::pair<std::string,int> com)//std::string com, int n)
@@ -35,14 +35,14 @@ std::pair<std::string, int> myQueue::head()
         logg_queue.print("Return head element");
         return begin->commands;
     }
-    throw ex2;
+    throw ex_queue;
     //return 0;
 }
 
 void myQueue::pop()
 {
     logg_queue.print("pop() function");
-    if(begin == NULL) {throw ex2;}
+    if(begin == NULL) {throw ex_queue;}
     if(begin == end) {end = NULL;}
     List* el = begin;
     begin = begin->next;
@@ -61,7 +61,7 @@ int myQueue::size_of_queue()
 void myQueue::print()
 {
     logg_queue.print("print() function");
-    if(begin == NULL) {throw ex2;}
+    if(begin == NULL) {throw ex_queue;}
     List* temp = begin;
     std::string queue;
     while (temp != NULL)
