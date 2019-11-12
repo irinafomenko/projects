@@ -5,7 +5,8 @@
 #include "class_myqueue.h"
 
 myexception ex_deque;
-Logger logg_deque("log_example.txt", "Deque");
+const char* myDeque::name_class = "Deque";
+Logger logg_deque("log_example.txt", myDeque::name_class);
 
 void myDeque::push(int n)
 {
@@ -55,10 +56,10 @@ void myDeque::pop_back()
     List* el = end;
     end = end->prev;
     delete el;
-    //if(size != 1)
-    //{
+    if(size != 1)
+    {
         end->next = NULL;
-    //}
+    }
     size--;
     logg_deque.print("Deleted last element");
 }
@@ -99,7 +100,7 @@ void myDeque::pop()
     logg_deque.print("Deleted first element");
 }
 
-int myDeque::size_of_queue()
+int myDeque::get_size()
 {
     logg_deque.print("size_of_queue() function");
     logg_deque.print("Return size of deque " + std::to_string(size));

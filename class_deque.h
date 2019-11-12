@@ -9,6 +9,7 @@
 
 class myDeque: public myQueue {
 public:
+    static const char* name_class;
     myDeque(){};
     ~myDeque()
     {
@@ -26,7 +27,7 @@ public:
     int begin_element();
     int end_element();
     void pop();
-    int size_of_queue();
+    int get_size();
     void print();
     void copy_to(myDeque *deq);
 };
