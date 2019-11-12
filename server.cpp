@@ -8,15 +8,18 @@
 #include <arpa/inet.h>
 #include "Logger.h"
 #include "class_deque.h"
+#include "enum_commands.h"
+#include "class_connect.h"
 
 using namespace std;
 
 /*---------------------------------------------*/
 Logger log_server("log_example.txt", "Server"); // класс Logger
 /*---------------------------------------------*/
-int sock_server, listener;
+int sock_server;
 myQueue* my_command = new myQueue;
 myDeque* myDequ = new myDeque;
+Connect cnct_server; //объект класса Connect
 
 void have_elements_in_response(int sock_server)
 {
@@ -28,33 +31,7 @@ void have_elements_in_response(int sock_server)
     log_server.print("Exit have_elements_in_respons()"); // класс Logger
 }
 
-void setting_connect(const char *ip_addr)
-{
-    log_server.print("setting_connect()"); // класс Logger
-    struct sockaddr_in addr;//адрес
-    listener = socket(AF_INET, SOCK_STREAM, 0);//создание сокета
-    if(listener < 0)
-    {
-        perror("socket");
-        log_server.print("error socket"); // класс Logger
-        exit(1);
-    }
-
-    addr.sin_family = AF_INET;//семейство адресов
-    addr.sin_port = 3425; // htons(3425);//порт
-    addr.sin_addr.s_addr = inet_addr(ip_addr);// htonl(INADDR_ANY);//IP-адрес хоста
-    if(bind(listener, (struct sockaddr *)&addr, sizeof(addr)) < 0)//связывание сокета с адресом
-    {
-        perror("bind");
-        log_server.print("error bind"); // класс Logger
-        exit(2);
-    }
-
-    listen(listener, 1);//очередь запросов на соединение
-    log_server.print("Exit setting_connect()"); // класс Logger
-}
-
-void client_connection()
+void connection_messages()
 {
     log_server.print("client_connection()"); // класс Logger
     //вывод сообщения о подключении клиента и отправка ответного сообщения
@@ -101,59 +78,65 @@ void receiving_commands()
 void commands_execute()
 {
     log_server.print("commands_execute()"); // класс Logger
+    myCmd enum_cmd;
+    int begin_el;
+    int end_el;
+    int size_of_deque;
+    int size;
+    myDeque* send_deque = new myDeque;
     while(my_command->get_size() != 0)
     {
         try
         {
             pair<std::string, int> k = my_command->head();
             cout << k.first << endl;// чтобы знать какая команда выполняется
-            if (k.first == "push") { myDequ->push(k.second); }
-            if (k.first == "push_front") { myDequ->push_front(k.second); }
-            if (k.first == "pop")
+            enum_cmd = str_to_enum(k.first);
+            switch(enum_cmd)
             {
-                myDequ->pop();
-                have_elements_in_response(sock_server);
-            }
-            if (k.first == "pop_back")
-            {
-                myDequ->pop_back();
-                have_elements_in_response(sock_server);
-            }
-            if (k.first == "begin_element")
-            {
-                //cout << myDequ->begin_element() << endl;
-                int begin_el = myDequ->begin_element();
-                have_elements_in_response(sock_server);
-                send(sock_server, &begin_el, sizeof(int), 0);
-            }
-            if (k.first == "end_element")
-            {
-                //cout << myDequ->end_element() << endl;
-                int end_el = myDequ->end_element();
-                have_elements_in_response(sock_server);
-                send(sock_server, &end_el, sizeof(int), 0);
-            }
-            if (k.first == "get_size")
-            {
-                //cout << myDequ->size_of_queue() << endl;
-                int size_of_deque = myDequ->get_size();
-                have_elements_in_response(sock_server);
-                send(sock_server, &size_of_deque, sizeof(int), 0);
-            }
-            if (k.first == "print")
-            {
-                myDequ->print();
-                have_elements_in_response(sock_server);
-                int size = myDequ->get_size();
-                send(sock_server, &size, sizeof(int), 0);
-                myDeque* send_deque = new myDeque;
-                myDequ->copy_to(send_deque);
-                while(send_deque->get_size() != 0)
-                {
-                    int el = send_deque->begin_element();
-                    send(sock_server, &el, sizeof(int), 0);
-                    send_deque->pop();
-                }
+                case PUSH:
+                    myDequ->push(k.second);
+                    break;
+                case PUSH_FRONT:
+                    myDequ->push_front(k.second);
+                    break;
+                case POP:
+                    myDequ->pop();
+                    have_elements_in_response(sock_server);
+                    break;
+                case POP_BACK:
+                    myDequ->pop_back();
+                    have_elements_in_response(sock_server);
+                    break;
+                case BEGIN_ELEMENT:
+                    begin_el = myDequ->begin_element();
+                    have_elements_in_response(sock_server);
+                    send(sock_server, &begin_el, sizeof(int), 0);
+                    break;
+                case END_ELEMENT:
+                    end_el = myDequ->end_element();
+                    have_elements_in_response(sock_server);
+                    send(sock_server, &end_el, sizeof(int), 0);
+                    break;
+                case GET_SIZE:
+                    size_of_deque = myDequ->get_size();
+                    have_elements_in_response(sock_server);
+                    send(sock_server, &size_of_deque, sizeof(int), 0);
+                    break;
+                case PRINT:
+                    myDequ->print();
+                    have_elements_in_response(sock_server);
+                    size = myDequ->get_size();
+                    send(sock_server, &size, sizeof(int), 0);
+                    myDequ->copy_to(send_deque);
+                    while(send_deque->get_size() != 0)
+                    {
+                        int el = send_deque->begin_element();
+                        send(sock_server, &el, sizeof(int), 0);
+                        send_deque->pop();
+                    }
+                    break;
+                default:
+                    break;
             }
         }
         catch (std::exception& e)
@@ -185,22 +168,19 @@ void main_server(const char *ip_addr)
     /*---------------------------------------------*/
     log_server.print("main_server()"); // класс Logger
     /*---------------------------------------------*/
-    setting_connect(ip_addr);
+    cnct_server.connect_for_server(ip_addr);
 
     while(1)
     {
-        if((sock_server = accept(listener, NULL, NULL)) < 0) {break;}
+        if((sock_server = cnct_server.connect_server_with_client()) < 0) {break;}
         /*--------------------------------------*/
-        client_connection();
+        connection_messages();
         /*--------------------------------------*/
         receiving_commands();
         /*--------------------------------------*/
         commands_execute();
         /*--------------------------------------*/
-        close(sock_server);//закрытие сокета
-        /*---------------------------------------------*/
-        log_server.print("Connection closed"); // класс Logger
-        /*---------------------------------------------*/
+        cnct_server.close_socket(sock_server);
     }
     /*---------------------------------------------*/
     log_server.print("Exit main_server()"); // класс Logger
