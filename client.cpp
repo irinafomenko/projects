@@ -4,9 +4,6 @@
 #include "class_myqueue.h" //для очереди команд
 #include <list>
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <arpa/inet.h>
 #include <windows.h>
 #include <thread>
 #include "enum_commands.h"
@@ -174,34 +171,28 @@ void query_execution()
     log_client.print("Exit query_execution()"); // класс Logger
 }
 
-void dialog_with_server(const char *ip_addr)
-{
-    /*---------------------------------------------*/
-    log_client.print("dialog_with_server()"); // класс Logger
-    /*---------------------------------------------*/
-    sock = cnct_client.connect_for_client(ip_addr);
-    log_client.print("Connected!"); // класс Logger
-    messages_with_server(ip_addr);
-    /*--------------------------------------*/
-    send_to_server();
-    /*--------------------------------------*/
-    query_execution();
-    /*--------------------------------------*/
-    cnct_client.close_socket(sock);
-    /*---------------------------------------------*/
-    log_client.print("Connection closed"); // класс Logger
-    /*---------------------------------------------*/
-    log_client.print("Exit dialog_with_server()"); // класс Logger
-}
-
 void thread_for_dialog_with_server(const char *ip_addr)
 {
+    log_client.print("thread_for_dialog_with_server()"); // класс Logger
     while(1)
     {
         Sleep(5000);
-        dialog_with_server(ip_addr);
+        /*---------------------------------------------*/
+        sock = cnct_client.connect_for_client(ip_addr);
+        log_client.print("Connected!"); // класс Logger
+        messages_with_server(ip_addr);
+        /*--------------------------------------*/
+        send_to_server();
+        /*--------------------------------------*/
+        query_execution();
+        /*--------------------------------------*/
+        cnct_client.close_socket(sock);
+        /*---------------------------------------------*/
+        log_client.print("Connection closed"); // класс Logger
+        /*---------------------------------------------*/
         if(flag_exit == TRUE) {break;}
     }
+    log_client.print("Exit thread_for_dialog_with_server()"); // класс Logger
 }
 
 void menu()
