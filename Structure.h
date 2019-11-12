@@ -22,26 +22,26 @@ protected:
         List* next;
         List* prev;
         List(): next(NULL), prev(NULL){};
-        List(int n, List* head): prev(NULL)
+        List(int n, List* nxt): prev(NULL)
         {
             num = n;
-            next = head;
+            next = nxt;
         };
         /*---------------------------------------------*/
-        List(int n, List* head, std::string com): prev(NULL)
+        List(int n, List* nxt, std::string com): prev(NULL)
         {
             commands.first = com;
             commands.second = n;
             //num = n;
-            next = head;
+            next = nxt;
             //command = com;
         };
         /*---------------------------------------------*/
-        List(int n, List* head, List* tail)
+        List(int n, List* nxt, List* prv)
         {
             num = n;
-            next = head;
-            prev = tail;
+            next = nxt;
+            prev = prv;
         };
     }*begin, *end;
     int size = 0;
