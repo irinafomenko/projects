@@ -9,6 +9,8 @@
 #include <arpa/inet.h>
 #include <windows.h>
 #include <thread>
+#include "enum_commands.h"
+#include "class_connect.h"
 
 using namespace std;
 
@@ -17,34 +19,16 @@ myQueue* my_commands = new myQueue;
 bool flag_exit = FALSE;
 int sock;//для клиента
 myQueue* deq_element = new myQueue; //для вывода элементов (дэка, первого, последнего, размера)
+myCmd enum_cmd;
+Connect cnct_client; //объект класса Connect
 /*---------------------------------------------*/
 /*---------------------------------------------*/
 Logger log_client("log_example.txt", "Client"); // класс Logger
 /*---------------------------------------------*/
 
-void server_connection(const char *ip_addr)
+void messages_with_server(const char *ip_addr)
 {
     log_client.print("server_connection()"); // класс Logger
-    struct sockaddr_in addr;//адрес
-    sock = socket(AF_INET, SOCK_STREAM, 0);//создание сокета
-    if(sock < 0)
-    {
-        perror("socket");
-        exit(1);
-    }
-
-    addr.sin_family = AF_INET;//семейство адресов
-    addr.sin_port = 3425; // или любой другой порт...
-    addr.sin_addr.s_addr = inet_addr(ip_addr);//IP-адресс хоста
-
-    while(connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-    {
-        log_client.print("Can't connect!"); // класс Logger
-        cout << "Can't connect!" << endl;
-        cout << "Try again..." << endl;
-        Sleep(5000);
-    }
-    log_client.print("Connected!"); // класс Logger
     /*--------------------------------------*/
     //отправка ip адресса клиента
     int size_ip_addr = sizeof(ip_addr)+1;
@@ -83,12 +67,30 @@ void send_to_server()
             send(sock, &el_first, size_cmd, 0);
             send(sock, &el_second, sizeof(el_second), 0);
             //для выводов элементов и сообщений исключений
-            if(el.first == "pop") {deq_element->push(el);}
-            else if(el.first == "pop_back") {deq_element->push(el);}
-            else if(el.first == "begin_element") {deq_element->push(el);}
-            else if(el.first == "end_element") {deq_element->push(el);}
-            else if(el.first == "get_size") {deq_element->push(el);}
-            else if(el.first == "print") {deq_element->push(el);}
+            enum_cmd = str_to_enum(el.first);
+            switch(enum_cmd)
+            {
+                case POP:
+                    deq_element->push(el);
+                    break;
+                case POP_BACK:
+                    deq_element->push(el);
+                    break;
+                case BEGIN_ELEMENT:
+                    deq_element->push(el);
+                    break;
+                case END_ELEMENT:
+                    deq_element->push(el);
+                    break;
+                case GET_SIZE:
+                    deq_element->push(el);
+                    break;
+                case PRINT:
+                    deq_element->push(el);
+                    break;
+                default:
+                    break;
+            }
             my_commands->pop();
         }
         catch (std::exception& e)
@@ -123,33 +125,35 @@ void query_execution()
         recv(sock, &msg_exception, size_msg_exception, 0);
         if( !strcmp(msg_exception, "yes"))
         {
-            if(cmd == "begin_element")
+            enum_cmd = str_to_enum(cmd);
+            switch(enum_cmd)
             {
-                recv(sock, &el, sizeof(int), 0);
-                cout << "Begin element is " << el << endl;
-            }
-            if(cmd == "end_element")
-            {
-                recv(sock, &el, sizeof(int), 0);
-                cout << "End element is " << el << endl;
-            }
-            if(cmd == "get_size")
-            {
-                recv(sock, &el, sizeof(int), 0);
-                cout << "Size of deque:  " << el << endl;
-            }
-            if(cmd == "print")
-            {
-                cout << "Deque: ";
-                int size;
-                recv(sock, &size, sizeof(int), 0);
-                for(int i=0; i<size; i++)
-                {
-                    int el;
+                case BEGIN_ELEMENT:
                     recv(sock, &el, sizeof(int), 0);
-                    cout << el << " ";
-                }
-                cout << endl;
+                    cout << "Begin element is " << el << endl;
+                    break;
+                case END_ELEMENT:
+                    recv(sock, &el, sizeof(int), 0);
+                    cout << "End element is " << el << endl;
+                    break;
+                case GET_SIZE:
+                    recv(sock, &el, sizeof(int), 0);
+                    cout << "Size of deque:  " << el << endl;
+                    break;
+                case PRINT:
+                    cout << "Deque: ";
+                    int size;
+                    recv(sock, &size, sizeof(int), 0);
+                    for(int i=0; i<size; i++)
+                    {
+                        int el;
+                        recv(sock, &el, sizeof(int), 0);
+                        cout << el << " ";
+                    }
+                    cout << endl;
+                    break;
+                default:
+                    break;
             }
         }
         else
@@ -175,13 +179,15 @@ void dialog_with_server(const char *ip_addr)
     /*---------------------------------------------*/
     log_client.print("dialog_with_server()"); // класс Logger
     /*---------------------------------------------*/
-    server_connection(ip_addr);
+    sock = cnct_client.connect_for_client(ip_addr);
+    log_client.print("Connected!"); // класс Logger
+    messages_with_server(ip_addr);
     /*--------------------------------------*/
     send_to_server();
     /*--------------------------------------*/
     query_execution();
     /*--------------------------------------*/
-    close(sock);//закрытие сокета
+    cnct_client.close_socket(sock);
     /*---------------------------------------------*/
     log_client.print("Connection closed"); // класс Logger
     /*---------------------------------------------*/
