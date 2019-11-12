@@ -51,7 +51,7 @@ void myQueue::pop()
     logg_queue.print("Deleted first element");
 }
 
-int myQueue::size_of_queue()
+int myQueue::get_size()
 {
     logg_queue.print("size_of_queue() function");
     logg_queue.print("Return size of queue " + std::to_string(size));
@@ -66,9 +66,17 @@ void myQueue::print()
     std::string queue;
     while (temp != NULL)
     {
-        int el = temp->num;
-        std::cout << el << " ";
-        queue += " " + std::to_string(el);
+        std::pair<std::string, int> el = temp->commands;
+        if(el.first == "push")
+        {
+            std::cout << el.first << " " << el.second << std::endl;
+            queue += " " + el.first + " " + std::to_string(el.second);
+        }
+        else
+        {
+            std::cout << el.first << " ";
+            queue += " " + el.first;
+        }
         temp = temp->next;
     }
     std::cout << std::endl;
