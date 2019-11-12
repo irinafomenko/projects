@@ -9,7 +9,8 @@
 
 class myQueue: public Structure{
 public:
-    myQueue() {};
+    static const char* name_class;
+    myQueue(){};
     ~myQueue()
     {
         while(begin != NULL)
@@ -24,7 +25,7 @@ public:
     std::pair<std::string, int> head();
     /*---------------------------------------------*/
     void pop();
-    int size_of_queue();
+    int get_size();
     void print();
 };
 

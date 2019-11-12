@@ -4,7 +4,8 @@
 #include "class_myqueue.h"
 
 myexception ex_queue;
-Logger logg_queue("log_example.txt", "Queue");
+const char* myQueue::name_class = "Queue";
+Logger logg_queue("log_example.txt", myQueue::name_class);
 
 void myQueue::push(std::pair<std::string,int> com)//std::string com, int n)
 {
