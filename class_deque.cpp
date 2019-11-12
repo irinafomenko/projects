@@ -15,15 +15,16 @@ void myDeque::push(int n)
         List* temp = new List(n, NULL, end);
         end->next = temp;
         end = end->next;
-        logg_deque.print("Add element " + std::to_string(n));
+        //logg_deque.print("Add element " + std::to_string(n));
     }
     else
     {
         end = new List(n, NULL, NULL);
         begin = end;
-        logg_deque.print("Add element " + std::to_string(n));
+        //logg_deque.print("Add element " + std::to_string(n));
     }
     size++;
+    logg_deque.print("Add element " + std::to_string(n));
 }
 
 void myDeque::push_front(int n)
@@ -34,15 +35,16 @@ void myDeque::push_front(int n)
         List* tmp = new List(n, begin, NULL);
         begin->prev = tmp;
         begin = tmp;
-        logg_deque.print("Add element " + std::to_string(n));
+        //logg_deque.print("Add element " + std::to_string(n));
     }
     else
     {
         begin = new List(n, NULL, NULL);
         end = begin;
-        logg_deque.print("Add element " + std::to_string(n));
+        //logg_deque.print("Add element " + std::to_string(n));
     }
     size++;
+    logg_deque.print("Add element " + std::to_string(n));
 }
 
 void myDeque::pop_back()
