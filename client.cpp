@@ -13,23 +13,18 @@
 using namespace std;
 
 /*---------------------------------------------*/
-myQueue* my_command = new myQueue;
+myQueue* my_commands = new myQueue;
 bool flag_exit = FALSE;
+int sock;//для клиента
+myQueue* deq_element = new myQueue; //для вывода элементов (дэка, первого, последнего, размера)
 /*---------------------------------------------*/
 /*---------------------------------------------*/
 Logger log_client("log_example.txt", "Client"); // класс Logger
 /*---------------------------------------------*/
 
-void send_to_server(const char *ip_addr)
+void server_connection(const char *ip_addr)
 {
-    /*---------------------------------------------*/
-    log_client.print("send_to_server()"); // класс Logger
-    /*---------------------------------------------*/
-    int size_queue;
-    int size_msg_exception;//для проверки вывода исключения
-    char msg_exception[size_msg_exception];//для проверки вывода исключения
-    myQueue* deq_element = new myQueue; //для вывода элементов (дэка, первого, последнего, размера)
-    int sock;//для клиента
+    log_client.print("server_connection()"); // класс Logger
     struct sockaddr_in addr;//адрес
     sock = socket(AF_INET, SOCK_STREAM, 0);//создание сокета
     if(sock < 0)
@@ -41,13 +36,7 @@ void send_to_server(const char *ip_addr)
     addr.sin_family = AF_INET;//семейство адресов
     addr.sin_port = 3425; // или любой другой порт...
     addr.sin_addr.s_addr = inet_addr(ip_addr);//IP-адресс хоста
-    /*
-    if(connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)//для установления соединения
-    {
-        perror("connect");
-        exit(2);
-    }
-     */
+
     while(connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
     {
         log_client.print("Can't connect!"); // класс Logger
@@ -70,15 +59,22 @@ void send_to_server(const char *ip_addr)
     char msg[size_msg];
     recv(sock, &msg, size_msg, 0);
     cout << msg << endl;
-    /*--------------------------------------*/
-    size_queue = my_command->size_of_queue();
+
+    log_client.print("Exit server_connection()"); // класс Logger
+}
+
+void send_to_server()
+{
+    log_client.print("send_to_server()"); // класс Logger
+    int size_queue;
+    size_queue = my_commands->get_size();
     send(sock, &size_queue, sizeof(size_queue), 0);
-    while(my_command->size_of_queue() != 0)
+    while(my_commands->get_size() != 0)
     {
         pair<string,int> el;
         try
         {
-            el = my_command->head();
+            el = my_commands->head();
             int size_cmd = el.first.length();
             char el_first[size_cmd];
             strcpy(el_first,el.first.c_str());
@@ -91,18 +87,24 @@ void send_to_server(const char *ip_addr)
             else if(el.first == "pop_back") {deq_element->push(el);}
             else if(el.first == "begin_element") {deq_element->push(el);}
             else if(el.first == "end_element") {deq_element->push(el);}
-            else if(el.first == "size_of_queue") {deq_element->push(el);}
+            else if(el.first == "get_size") {deq_element->push(el);}
             else if(el.first == "print") {deq_element->push(el);}
-            my_command->pop();
+            my_commands->pop();
         }
         catch (std::exception& e)
         {
             std::cout << e.what() << std::endl;
         }
     }
+    log_client.print("Commands sent"); // класс Logger
+    log_client.print("Exit server_connection()"); // класс Logger
+}
 
+void query_execution()
+{
+    log_client.print("query_execution()"); // класс Logger
     //выполнение запросов
-    while(deq_element->size_of_queue() != 0)
+    while(deq_element->get_size() != 0)
     {
 
         int el;
@@ -115,7 +117,9 @@ void send_to_server(const char *ip_addr)
         {
             std::cout << e.what() << std::endl;
         }
+        int size_msg_exception;//для проверки вывода исключения
         recv(sock, &size_msg_exception, sizeof(int), 0);
+        char msg_exception[size_msg_exception];//для проверки вывода исключения
         recv(sock, &msg_exception, size_msg_exception, 0);
         if( !strcmp(msg_exception, "yes"))
         {
@@ -129,7 +133,7 @@ void send_to_server(const char *ip_addr)
                 recv(sock, &el, sizeof(int), 0);
                 cout << "End element is " << el << endl;
             }
-            if(cmd == "size_of_queue")
+            if(cmd == "get_size")
             {
                 recv(sock, &el, sizeof(int), 0);
                 cout << "Size of deque:  " << el << endl;
@@ -162,33 +166,42 @@ void send_to_server(const char *ip_addr)
         }
 
     }
+    log_client.print("Commands executed"); // класс Logger
+    log_client.print("Exit query_execution()"); // класс Logger
+}
 
+void dialog_with_server(const char *ip_addr)
+{
+    /*---------------------------------------------*/
+    log_client.print("dialog_with_server()"); // класс Logger
+    /*---------------------------------------------*/
+    server_connection(ip_addr);
+    /*--------------------------------------*/
+    send_to_server();
+    /*--------------------------------------*/
+    query_execution();
+    /*--------------------------------------*/
     close(sock);//закрытие сокета
     /*---------------------------------------------*/
     log_client.print("Connection closed"); // класс Logger
     /*---------------------------------------------*/
+    log_client.print("Exit dialog_with_server()"); // класс Logger
 }
 
-void thread_for_send_to_server(const char *ip_addr)
+void thread_for_dialog_with_server(const char *ip_addr)
 {
     while(1)
     {
         Sleep(5000);
-        send_to_server(ip_addr);
+        dialog_with_server(ip_addr);
         if(flag_exit == TRUE) {break;}
     }
 }
 
-void main_client(const char *ip_addr)
+void menu()
 {
-    /*---------------------------------------------*/
-    log_client.print("main_client()"); // класс Logger
-    /*---------------------------------------------*/
-    /*---------------------------------------------*/
-    thread thread_for_server(thread_for_send_to_server, ip_addr);
-    /*---------------------------------------------*/
+    log_client.print("Menu()"); // класс Logger
     int change = 1;
-    int el;//добавление элемента в дек
     pair<string, int> change_command ("command",0);
     while((change >= 1) && (change < 9))
     {
@@ -212,38 +225,38 @@ void main_client(const char *ip_addr)
                 //cin >> el;
                 cin >> change_command.second;
                 change_command.first = "push";
-                my_command->push(change_command);
+                my_commands->push(change_command);
                 break;
             case 2:
                 cout << "Enter element: ";
                 //cin >> el;
                 cin >> change_command.second;
                 change_command.first = "push_front";
-                my_command->push(change_command);
+                my_commands->push(change_command);
                 break;
             case 3:
                 change_command.first = "pop";
-                my_command->push(change_command);
+                my_commands->push(change_command);
                 break;
             case 4:
                 change_command.first = "pop_back";
-                my_command->push(change_command);
+                my_commands->push(change_command);
                 break;
             case 5:
                 change_command.first = "begin_element";
-                my_command->push(change_command);
+                my_commands->push(change_command);
                 break;
             case 6:
                 change_command.first = "end_element";
-                my_command->push(change_command);
+                my_commands->push(change_command);
                 break;
             case 7:
-                change_command.first = "size_of_queue";
-                my_command->push(change_command);
+                change_command.first = "get_size";
+                my_commands->push(change_command);
                 break;
             case 8:
                 change_command.first = "print";
-                my_command->push(change_command);
+                my_commands->push(change_command);
                 break;
             default:
                 flag_exit = TRUE;
@@ -251,9 +264,22 @@ void main_client(const char *ip_addr)
         }
 
     }
+    log_client.print("Exit menu()"); // класс Logger
+}
+
+void main_client(const char *ip_addr)
+{
+    /*---------------------------------------------*/
+    log_client.print("main_client()"); // класс Logger
+    /*---------------------------------------------*/
+    /*---------------------------------------------*/
+    thread thread_for_server(thread_for_dialog_with_server, ip_addr);
+    /*---------------------------------------------*/
+    menu();
+    /*---------------------------------------------*/
     thread_for_server.join();
     /*---------------------------------------------*/
-    log_client.print("main_client() exit"); // класс Logger
+    log_client.print("Exit main_client()"); // класс Logger
     /*---------------------------------------------*/
 }
 
