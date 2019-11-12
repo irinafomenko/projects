@@ -17,15 +17,9 @@ private:
     std::mutex mutex;
     const char * comment;
     const char * file_name;
-public:
     std::ofstream log_file;
-    Logger(const char * fname) {
-        //std::cerr << "Opening log file." << std::endl;
-        //always append to the EOF since we need to save all our logs
-        file_name = fname;
-        log_file.open(fname, std::ios::app);
-    }
-    Logger(const char * fname, const char * cmt) {
+public:
+    Logger(const char * fname, const char * cmt = "") {
         comment = cmt;
         file_name = fname;
         //std::cerr << "Opening log file." << std::endl;
@@ -46,16 +40,8 @@ public:
         mutex.lock();
         if (log_file.is_open())
         {
-            if(comment != NULL)
-            {
-                //print time with log messages to detect when event happens
-                log_file << t << " | " << comment << " | " << str << std::endl;
-            }
-            else
-            {
-                //print time with log messages to detect when event happens
-                log_file << t << " | " << str << std::endl;
-            }
+            //print time with log messages to detect when event happens
+            log_file << t << " | " << comment << " | " << str << std::endl;
             if(log_file.tellp() > 500000000)
             {
                 log_file.close();
