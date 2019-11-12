@@ -1,11 +1,7 @@
 //
 // Created by ifomenko on 23.10.2019.
 //
-#include <sys/types.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <arpa/inet.h>
 #include "Logger.h"
 #include "class_deque.h"
 #include "enum_commands.h"
