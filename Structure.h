@@ -54,7 +54,7 @@ public:
     virtual void pop_back() {};
     virtual int begin_element() {return begin->num;};
     virtual int end_element() { return end->num;};
-    virtual int size_of_queue() {return size;};
+    virtual int get_size() {return size;};
 };
 
 #endif //SPISOK_2_STRUCTURE_H
