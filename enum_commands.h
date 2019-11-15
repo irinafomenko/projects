@@ -9,7 +9,7 @@
 
 enum myCmd
 {
-    PUSH,
+    PUSH = 1,
     PUSH_FRONT,
     POP,
     POP_BACK,
@@ -17,7 +17,7 @@ enum myCmd
     END_ELEMENT,
     GET_SIZE,
     PRINT
-} cmd;
+};
 
 myCmd str_to_enum(std::string str)
 {
@@ -30,6 +30,20 @@ myCmd str_to_enum(std::string str)
     else if(str == "end_element") {result = END_ELEMENT;}
     else if(str == "get_size") {result = GET_SIZE;}
     else if(str == "print") {result = PRINT;}
+    return result;
+}
+
+std::string enum_to_str(int enm)
+{
+    std::string result;
+    if(enm == PUSH) {result = "push";}
+    else if(enm == PUSH_FRONT) {result = "push_front";}
+    else if(enm == POP) {result = "pop";}
+    else if(enm == POP_BACK) {result = "pop_back";}
+    else if(enm == BEGIN_ELEMENT) {result = "begin_element";}
+    else if(enm == END_ELEMENT) {result = "end_element";}
+    else if(enm == GET_SIZE) {result = "get_size";}
+    else if(enm == PRINT) {result = "print";}
     return result;
 }
 #endif //SPISOK_2_ENUM_COMMANDS_H
