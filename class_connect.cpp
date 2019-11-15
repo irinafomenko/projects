@@ -34,7 +34,6 @@ int Connect::connect_for_client(const char *ip_addr)
 int Connect::connect_for_server(const char *ip_addr)
 {
     log_connect.print("connect_for_server()"); // класс Logger
-    struct sockaddr_in addr;//адрес
     listener = socket(AF_INET, SOCK_STREAM, 0);//создание сокета
     if(listener < 0)
     {
@@ -60,8 +59,9 @@ int Connect::connect_for_server(const char *ip_addr)
 int Connect::connect_server_with_client()
 {
     log_connect.print("connect_server_with_client()"); // класс Logger
+    int connect = accept(listener, NULL, NULL);
     log_connect.print("Exit connect_server_with_client()"); // класс Logger
-    return accept(listener, NULL, NULL);
+    return connect;
 }
 
 void Connect::close_socket(int sock)
