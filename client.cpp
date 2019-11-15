@@ -1,6 +1,7 @@
 //
-// Created by ifomenko on 24.10.2019.
+// Created by ifomenko on 24.10.2019
 //
+#include <iostream>
 #include "class_myqueue.h" //для очереди команд
 #include <list>
 #include <sys/socket.h>
@@ -65,29 +66,7 @@ void send_to_server()
             send(sock, &el_second, sizeof(el_second), 0);
             //для выводов элементов и сообщений исключений
             enum_cmd = str_to_enum(el.first);
-            switch(enum_cmd)
-            {
-                case POP:
-                    deq_element->push(el);
-                    break;
-                case POP_BACK:
-                    deq_element->push(el);
-                    break;
-                case BEGIN_ELEMENT:
-                    deq_element->push(el);
-                    break;
-                case END_ELEMENT:
-                    deq_element->push(el);
-                    break;
-                case GET_SIZE:
-                    deq_element->push(el);
-                    break;
-                case PRINT:
-                    deq_element->push(el);
-                    break;
-                default:
-                    break;
-            }
+            if(enum_cmd > PUSH_FRONT) {deq_element->push(el);}
             my_commands->pop();
         }
         catch (std::exception& e)
@@ -198,61 +177,39 @@ void thread_for_dialog_with_server(const char *ip_addr)
 void menu()
 {
     log_client.print("Menu()"); // класс Logger
-    int change = 1;
+    myCmd menu = PUSH;
+    int change = menu;
     pair<string, int> change_command ("command",0);
     while((change >= 1) && (change < 9))
     {
         //mut.lock();//чтобы второй поток ничего не выводил пока не выбрана команда
-        cout << "1 - Add element to back" << endl;
-        cout << "2 - Add element to front" << endl;
-        cout << "3 - Delete first element" << endl;
-        cout << "4 - Delete last element" << endl;
-        cout << "5 - Print first element" << endl;
-        cout << "6 - Print last element" << endl;
-        cout << "7 - Print size" << endl;
-        cout << "8 - Print deque" << endl;
+        cout << PUSH << " - Add element to back" << endl;
+        cout << PUSH_FRONT << " - Add element to front" << endl;
+        cout << POP << " - Delete first element" << endl;
+        cout << POP_BACK << " - Delete last element" << endl;
+        cout << BEGIN_ELEMENT << " - Print first element" << endl;
+        cout << END_ELEMENT << " - Print last element" << endl;
+        cout << GET_SIZE << " - Print size" << endl;
+        cout << PRINT << " - Print deque" << endl;
         cout << "9 - Quit" << endl;
         //mut.lock();
         cin >> change;
         //mut.unlock();
-
         switch (change) {
-            case 1:
+            case PUSH:
                 cout << "Enter element: ";
-                //cin >> el;
                 cin >> change_command.second;
                 change_command.first = "push";
                 my_commands->push(change_command);
                 break;
-            case 2:
+            case PUSH_FRONT:
                 cout << "Enter element: ";
-                //cin >> el;
                 cin >> change_command.second;
                 change_command.first = "push_front";
                 my_commands->push(change_command);
                 break;
-            case 3:
-                change_command.first = "pop";
-                my_commands->push(change_command);
-                break;
-            case 4:
-                change_command.first = "pop_back";
-                my_commands->push(change_command);
-                break;
-            case 5:
-                change_command.first = "begin_element";
-                my_commands->push(change_command);
-                break;
-            case 6:
-                change_command.first = "end_element";
-                my_commands->push(change_command);
-                break;
-            case 7:
-                change_command.first = "get_size";
-                my_commands->push(change_command);
-                break;
-            case 8:
-                change_command.first = "print";
+            case POP: case POP_BACK: case BEGIN_ELEMENT: case END_ELEMENT: case GET_SIZE: case PRINT:
+                change_command.first = enum_to_str(change);
                 my_commands->push(change_command);
                 break;
             default:
