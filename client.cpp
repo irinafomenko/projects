@@ -196,16 +196,10 @@ void menu()
         cin >> change;
         //mut.unlock();
         switch (change) {
-            case PUSH:
+            case PUSH: case PUSH_FRONT:
                 cout << "Enter element: ";
                 cin >> change_command.second;
-                change_command.first = "push";
-                my_commands->push(change_command);
-                break;
-            case PUSH_FRONT:
-                cout << "Enter element: ";
-                cin >> change_command.second;
-                change_command.first = "push_front";
+                change_command.first = enum_to_str(change);
                 my_commands->push(change_command);
                 break;
             case POP: case POP_BACK: case BEGIN_ELEMENT: case END_ELEMENT: case GET_SIZE: case PRINT:
