@@ -7,5 +7,8 @@
 
 void have_elements_in_response(int sock);
 void main_server(const char *ip_addr);
+void commands_execute();
+void receiving_commands();
+void connection_messages();
 
 #endif //SPISOK_2_SERVER_H
