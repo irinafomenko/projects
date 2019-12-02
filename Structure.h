@@ -10,8 +10,7 @@
 #include "my_exceptions.h"
 #include "Logger.h"
 
-myexception ex2;
-Logger logg("log_example.txt", "Structure");
+//Logger logg("log_example.txt", "Structure");
 
 class Structure {
 protected:
@@ -19,30 +18,30 @@ protected:
     {
         int num;
         std::pair<std::string, int> commands;
-        //std::string command;
+        //std::sring command;
         List* next;
         List* prev;
         List(): next(NULL), prev(NULL){};
-        List(int n, List* head): prev(NULL)
+        List(int n, List* nxt): prev(NULL)
         {
             num = n;
-            next = head;
+            next = nxt;
         };
         /*---------------------------------------------*/
-        List(int n, List* head, std::string com): prev(NULL)
+        List(int n, List* nxt, std::string com): prev(NULL)
         {
             commands.first = com;
             commands.second = n;
             //num = n;
-            next = head;
+            next = nxt;
             //command = com;
         };
         /*---------------------------------------------*/
-        List(int n, List* head, List* tail)
+        List(int n, List* nxt, List* prv)
         {
             num = n;
-            next = head;
-            prev = tail;
+            next = nxt;
+            prev = prv;
         };
     }*begin, *end;
     int size = 0;
@@ -55,7 +54,7 @@ public:
     virtual void pop_back() {};
     virtual int begin_element() {return begin->num;};
     virtual int end_element() { return end->num;};
-    virtual int size_of_queue() {return size;};
+    virtual int get_size() {return size;};
 };
 
 #endif //SPISOK_2_STRUCTURE_H

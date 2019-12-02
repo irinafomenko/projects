@@ -16,20 +16,15 @@ class Logger {
 private:
     std::mutex mutex;
     const char * comment;
-public:
+    const char * file_name;
     std::ofstream log_file;
-    Logger(const char * fname) {
-        //std::cerr << "Opening log file." << std::endl;
-        //always append to the EOF since we need to save all our logs
-        log_file.open(fname, std::ios::app);
-        //std::ofstream log_file(fname, std::ios::app);
-    }
-    Logger(const char * fname, const char * cmt) {
-        //std::cerr << "Opening log file." << std::endl;
-        //always append to the EOF since we need to save all our logs
-        log_file.open(fname, std::ios::app);
-        //std::ofstream log_file(fname, std::ios::app);
+public:
+    Logger(const char * fname, const char * cmt = "") {
         comment = cmt;
+        file_name = fname;
+        //std::cerr << "Opening log file." << std::endl;
+        //always append to the EOF since we need to save all our logs
+        log_file.open(fname, std::ios::app);
     }
     ~Logger() {
         //std::cerr << "Closing log file." << std::endl;
@@ -45,17 +40,17 @@ public:
         mutex.lock();
         if (log_file.is_open())
         {
-            if(comment != NULL)
+            //print time with log messages to detect when event happens
+            log_file << t << " | " << comment << " | " << str << std::endl;
+            if(log_file.tellp() > 500000000)
             {
-                //print time with log messages to detect when event happens
-                log_file << t << " | " << comment << " | " << str << std::endl;
+                log_file.close();
+                if( remove( file_name ) != 0 )
+                {
+                    perror( "Error deleting file" );
+                }
+                log_file.open(file_name, std::ios::app);
             }
-            else
-            {
-                //print time with log messages to detect when event happens
-                log_file << t << " | " << str << std::endl;
-            }
-
         } else {
             std::cerr <<"Logger doesn't work!" << std::endl;
         }
